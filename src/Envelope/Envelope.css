@@ -1,0 +1,83 @@
+.invitation {
+  width: 100%;
+  min-height: 100vh; /* ✅ full screen */
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+
+  background-image: url("../../public/envelope1.png"); /* ✅ simpler path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  padding: 0; /* ✅ remove padding that shifts layout */
+}
+
+/* Names stay near the top */
+.names {
+  position: absolute;
+  top: 12%; /* ✅ adjust if needed */
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+
+  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
+  font-size: clamp(28px, 4vw, 42px);
+  color: #ae6172; /* Deep Puce */
+}
+
+.seal-container {
+  position: absolute;
+  left: 50%;
+  top: 42%; /* ← this aligns with the flap point */
+  transform: translate(-50%, -50%);
+  width: clamp(64px, 14vw, 92px);
+  height: clamp(64px, 14vw, 92px);
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* The stamp image fills the clickable area */
+.seal-container img,
+.photo {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* "CLICK TO OPEN" anchored near bottom */
+.click-to-open {
+  position: absolute;
+  left: 50%;
+  bottom: 10%; /* ✅ move it up/down */
+  transform: translateX(-50%);
+  margin: 0;
+
+  font-family: "Times New Roman", serif;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  color: #ae6172; /* Deep Puce */
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* Optional hover feel */
+.seal-container:hover {
+  outline: 2px solid rgba(174, 97, 114, 0.35);
+  outline-offset: 6px;
+  border-radius: 999px;
+}
+
+.click-to-open:hover {
+  color: #7b354b; /* Catawba */
+}
+
+/* Small screens tweak */
+@media (max-width: 380px) {
+  .click-to-open {
+    bottom: 8%;
+    font-size: 11px;
+  }
+}

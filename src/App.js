@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, useLocation } from "react-router-dom";
+import Envelope from "./Envelope/Envelope";
+import Details from "./Details/Details";
+import Guest from "./RSVP/Guest";
+import SaveTheDate from "./SaveTheDate/SaveTheDate";
+
+function DetailsPage({ guestId }) {
+  return (
+    <>
+      <Details />
+      <Guest guestId={guestId} />
+    </>
+  );
+}
 
 function App() {
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
+  // const guestId = queryParams.get("guestId");
+  // console.log(queryParams)
+  const guestId = 123;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div class="root-class">
+      <Routes>
+        {/* <Route path="/" element={<Envelope />} />
+        <Route path="/details" element={<DetailsPage guestId={guestId} />} /> */}
+        <Route path="/" element={<SaveTheDate />} />
+      </Routes>
     </div>
   );
 }
