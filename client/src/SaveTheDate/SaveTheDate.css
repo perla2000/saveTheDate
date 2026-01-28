@@ -1,0 +1,140 @@
+.std-page {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.std-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden; /* no user scroll */
+}
+
+.std-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* animation: autoScroll 15s linear infinite; */
+}
+
+/* @keyframes autoScroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+} */
+.std-logo {
+  padding-top: 33px;
+  height: fit-content;
+}
+.std-logo-img {
+  width: 29%;
+}
+
+.std-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+/* Overlay stays fixed/absolute on top */
+.std-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* so scrolling works easily */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 42px 24px;
+}
+
+/* Fade tint like your screenshot */
+.std-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(90, 20, 45, 0.5),
+    rgba(255, 255, 255, 0.789),
+    rgba(90, 20, 45, 0.5)
+  );
+}
+.std-overlay > * {
+  position: relative; /* keep text above tint */
+  z-index: 1;
+}
+
+.std-top {
+  text-align: center;
+  color: #fff;
+  line-height: 41px;
+}
+.std-script {
+  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
+  font-size: 35px;
+  font-style: italic;
+  opacity: 0.95;
+}
+.std-title {
+  margin-top: 6px;
+  font-family: "Georgia", serif;
+  letter-spacing: 2px;
+  font-weight: 600;
+  font-size: 26px;
+}
+
+.std-center {
+  text-align: center;
+  color: #6c1f3a;
+}
+.std-names {
+  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
+  font-size: 46px;
+}
+.std-monogram {
+  margin: 16px auto 10px;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  border: 1px solid rgba(108, 31, 58, 0.6);
+  display: grid;
+  place-items: center;
+  font-family: "Georgia", serif;
+  font-size: 20px;
+}
+.std-since {
+  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.std-bottom {
+  text-align: center;
+  color: #fff;
+  line-height: 41px;
+}
+.std-save {
+  font-family: "Georgia", serif;
+  letter-spacing: 2px;
+  font-weight: 600;
+  font-size: 26px;
+}
+.std-date {
+  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
+  font-size: 35px;
+  opacity: 0.95;
+}
+
+/* Mobile tweak */
+@media (max-width: 600px) {
+  .std-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .std-img {
+    height: 180px;
+  }
+}

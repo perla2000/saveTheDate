@@ -1,0 +1,13 @@
+body {
+  background-color: aliceblue;
+}
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+}
+
+.root-class {
+  width: 100vw;
+  height: 100vh;
+}

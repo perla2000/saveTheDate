@@ -1,0 +1,135 @@
+/* Global background */
+.guest-container {
+  min-height: 100vh;
+  background-color: #f4f3f0; /* Anti-Flash White */
+  font-family: "Arial", sans-serif;
+  padding-top: 80px;
+  padding-bottom: 40px;
+  /* background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;
+  background-image: url(../../public/envelope.png); */
+}
+
+/* Main wrapper */
+.guest-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.guest-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.guest-header h1 {
+  font-size: 2rem;
+  color: #7b354b; /* Deep Puce */
+  margin-bottom: 10px;
+}
+
+.guest-header p {
+  font-size: 1rem;
+  color: #7b354b; /* Catawba 7b354b*/
+}
+
+/* Card */
+.guest-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.guest-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Guest info */
+.guest-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.guest-name {
+  font-size: 1rem;
+  color: #7b354b;
+  /* #7b354b; */
+}
+
+/* Buttons */
+.guest-buttons button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.guest-buttons button.yes {
+  background-color: #fceaf0; /* Lavender Blush */
+  color: #7b354b; /* Catawba */
+}
+
+.guest-buttons button.yes.active {
+  background-color: #7b354b; /* Catawba */
+  color: #fceaf0; /* Lavender Blush */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.guest-buttons button.no {
+  background-color: #fceaf0; /* Lavender Blush */
+  color: #7b354b; /* Catawba */
+}
+
+.guest-buttons button.no.active {
+  background-color: #7b354b; /* Catawba */
+  color: #fceaf0; /* Lavender Blush */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.guest-buttons button:hover:not(.active) {
+  background-color: #fceaf0; /* Pale Chestnut hover */
+}
+
+/* Submit button */
+.submit-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #ae6172; /* Deep Puce */
+  color: #fceaf0; /* Lavender Blush */
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn:hover {
+  background-color: #994f61; /* Slightly darker Deep Puce */
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+  .guest-header h1 {
+    font-size: 2.5rem;
+  }
+  .guest-name {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .guest-main {
+    padding: 0 40px;
+  }
+}
