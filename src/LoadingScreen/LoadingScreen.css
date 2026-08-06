@@ -1,0 +1,207 @@
+.load-page {
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.789);
+  padding: 16px;
+  position: relative;
+}
+
+.heart-wrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.heart-svg {
+  width: 200px;
+  height: 150px;
+  animation: heartFloat 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 3px 12px rgba(142, 75, 98, 0.15));
+}
+
+/* .heart-path {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 180;
+  animation: drawHeartOutline 4.5s ease-in-out infinite;
+} */
+
+.heart-path {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: draw 4.5s linear infinite;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.heart-text {
+  font-family: "Luxurious Script", serif;
+  font-size: 18px;
+  font-weight: 400;
+  fill: #8e4b62;
+  letter-spacing: 2px;
+  opacity: 1;
+  animation: 2.5s ease-in-out infinite;
+}
+
+@keyframes drawHeartOutline {
+  0% {
+    stroke-dashoffset: 180;
+  }
+  55% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  55% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes heartFloat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+/* Tap to open section - positioned below heart container */
+.tap-to-open-below-heart {
+  position: absolute;
+  top: 58%;
+  transform: translate(-50%, 220px);
+  text-align: center;
+  cursor: pointer;
+  animation: fadeInUp 0.8s ease forwards;
+  transition: all 0.3s ease;
+  padding: 20px;
+  z-index: 10;
+}
+
+.tap-to-open-below-heart:hover {
+  transform: translate(-50%, 215px);
+}
+
+.tap-to-open-below-heart .tap-text {
+  font-family: "Playfair Display", serif;
+  font-size: 1.4rem;
+  color: #8e4b62;
+  margin-bottom: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tap-to-open-below-heart .tap-hint {
+  font-size: 1.5rem;
+  animation: sparkle 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* Loading text */
+.loading-text {
+  position: absolute;
+  font-size: 1.1rem;
+  color: rgba(142, 75, 98, 0.8);
+  font-style: italic;
+  text-align: center;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .tap-to-open-below-heart {
+    transform: translate(
+      -50%,
+      200px
+    ); /* Closer to heart on mobile but still no overlap */
+  }
+
+  .tap-to-open-below-heart:hover {
+    transform: translate(-50%, 195px);
+  }
+
+  .tap-to-open-below-heart .tap-text {
+    font-size: 1.2rem;
+  }
+
+  .loading-text {
+    bottom: 80px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .tap-to-open-below-heart {
+    transform: translate(-50%, 180px); /* Even closer on short screens */
+  }
+
+  .tap-to-open-below-heart:hover {
+    transform: translate(-50%, 175px);
+  }
+
+  .loading-text {
+    bottom: 60px;
+  }
+}
+
+@media (max-height: 500px) {
+  .tap-to-open-below-heart {
+    transform: translate(
+      -50%,
+      160px
+    ); /* Minimal distance on very short screens */
+  }
+
+  .tap-to-open-below-heart:hover {
+    transform: translate(-50%, 155px);
+  }
+}

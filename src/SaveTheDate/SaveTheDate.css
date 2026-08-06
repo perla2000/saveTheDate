@@ -1,21 +1,41 @@
 .std-page {
   position: relative;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   width: 100%;
   overflow: hidden;
   background: #ffffff;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+  isolation: isolate;
 }
 
 .std-bg {
   position: absolute;
   inset: 0;
   overflow: hidden; /* no user scroll */
+  /* iOS hardware acceleration */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
+  /* Better iOS scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Additional iOS optimizations */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
 }
 
 .std-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* animation: autoScroll 15s linear infinite; */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* @keyframes autoScroll {
@@ -32,6 +52,7 @@
 }
 .std-logo-img {
   width: 29%;
+  max-width: 117px;
 }
 
 .std-img {
@@ -49,6 +70,8 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 42px 24px;
+  /* Ensure overlay is above any background interference */
+  z-index: 20;
 }
 
 /* Fade tint like your screenshot */
@@ -56,16 +79,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(90, 20, 45, 0.5),
-    rgba(255, 255, 255, 0.789),
-    rgba(90, 20, 45, 0.5)
-  );
+  background: linear-gradient(rgba(90, 20, 45, 0.5), rgba(90, 20, 45, 0.5));
 }
 .std-overlay > * {
   position: relative; /* keep text above tint */
-  z-index: 1;
+  z-index: 21;
 }
 
 .std-top {
@@ -74,8 +92,10 @@
   line-height: 41px;
 }
 .std-script {
-  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
-  font-size: 35px;
+  font-family:
+    "Luxurious Script", "Apple Chancery", "Dancing Script", "Brush Script MT",
+    "Lucida Handwriting", cursive;
+  font-size: 1.75rem;
   font-style: italic;
   opacity: 0.95;
 }
@@ -84,31 +104,41 @@
   font-family: "Georgia", serif;
   letter-spacing: 2px;
   font-weight: 600;
-  font-size: 26px;
+  font-size: 1.1rem;
 }
 
 .std-center {
   text-align: center;
-  color: #6c1f3a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex: 1;
 }
 .std-names {
-  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
-  font-size: 46px;
+  font-family:
+    "Luxurious Script", "Apple Chancery", "Dancing Script", "Brush Script MT",
+    "Lucida Handwriting", cursive;
+  font-size: 3.2rem;
 }
 .std-monogram {
   margin: 16px auto 10px;
   width: 64px;
   height: 64px;
   border-radius: 999px;
-  border: 1px solid rgba(108, 31, 58, 0.6);
+  border: 1px solid #fff;
   display: grid;
   place-items: center;
   font-family: "Georgia", serif;
-  font-size: 20px;
+  font-size: 1rem;
 }
 .std-since {
-  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
-  font-size: 18px;
+  font-family:
+    "Luxurious Script", "Apple Chancery", "Dancing Script", "Brush Script MT",
+    "Lucida Handwriting", cursive;
+  font-size: 0.95rem;
   opacity: 0.9;
 }
 
@@ -116,25 +146,206 @@
   text-align: center;
   color: #fff;
   line-height: 41px;
+  /* Move the date section higher to avoid overlap with swipe indicator */
+  transform: translateY(-60px);
 }
-.std-save {
+/* .std-save {
   font-family: "Georgia", serif;
   letter-spacing: 2px;
   font-weight: 600;
-  font-size: 26px;
+  font-size: 1.3rem;
+} */
+.std-save {
+  font-family: "Georgia", serif;
+  letter-spacing: 2px;
+  font-weight: 400;
+  font-size: 1rem;
 }
+
 .std-date {
-  font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT", cursive;
-  font-size: 35px;
+  font-family:
+    "Luxurious Script", "Apple Chancery", "Dancing Script", "Brush Script MT",
+    "Lucida Handwriting", cursive;
+  font-size: 1.75rem;
   opacity: 0.95;
+  line-height: 1.5;
+}
+
+.std-date-save {
+  font-family: "Georgia", serif;
+  font-size: 0.55rem;
+  opacity: 0.95;
+  margin-top: -5px;
+}
+
+.clickable-date {
+  cursor: pointer;
+  pointer-events: auto; /* Override the overlay's pointer-events: none */
+  transition: all 0.3s ease;
+  padding: 10px 20px;
+  border-radius: 15px;
+  position: relative;
+  display: inline-block;
+
+  background: rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.clickable-date:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.clickable-date:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.clickable-date::after {
+  content: "📅 Click to add to calendar";
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.clickable-date:hover::after {
+  opacity: 1;
 }
 
 /* Mobile tweak */
 @media (max-width: 600px) {
+  .std-page {
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
+    max-height: 100vh;
+    max-height: calc(var(--vh, 1vh) * 100);
+  }
+
   .std-grid {
     grid-template-columns: repeat(3, 1fr);
   }
   .std-img {
     height: 180px;
+  }
+}
+
+/* iOS Safari specific fixes for exact screen sizing */
+/* Loading overlay while images load */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(90, 20, 45, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.loading-spinner {
+  color: white;
+  font-family: "Georgia", serif;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+}
+
+/* Swipe down indicator */
+.swipe-down-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: -2rem;
+  padding: 1rem 0;
+  pointer-events: auto; /* Enable pointer events */
+}
+
+.scroll-text {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  margin-bottom: 0.5rem;
+}
+
+.swipe-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  animation: swipeBounce 2s ease-in-out infinite;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto; /* Ensure it's clickable */
+}
+
+.swipe-arrow:hover {
+  background: rgba(249, 249, 249, 0.2);
+  transform: scale(1.1);
+}
+
+.swipe-arrow:active {
+  transform: scale(0.95);
+}
+
+.swipe-arrow.swipe-clicked {
+  animation: swipeClickAnimation 0.6s ease-out forwards;
+}
+
+@keyframes swipeClickAnimation {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    transform: translateY(-15px) scale(1.2);
+  }
+  60% {
+    transform: translateY(20px) scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(40px) scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeBounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
   }
 }

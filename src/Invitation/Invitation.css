@@ -1,0 +1,605 @@
+/* Wedding Invitation with Flipping Photos - Based on Your Design */
+:root {
+  --wedding-burgundy: #8b4b6b;
+  --wedding-rose: #d7a89e;
+  --wedding-brown: #6b4423;
+  --wedding-cream: #f7f1f1;
+  --wedding-white: #ffffff;
+  --wedding-text: #4a3a3f;
+}
+.invMain {
+  background-image:
+    linear-gradient(rgba(90, 20, 45, 0.5), rgba(90, 20, 45, 0.5)),
+    url(../../public/yarze.png);
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  z-index: 10;
+  isolation: isolate;
+}
+
+.invPage {
+  width: 100%;
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  background: linear-gradient(#e8d5d3 100%, #8b4b6b 20%, #f7f1f1 0%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  font-family: "Playfair Display", serif;
+}
+
+.invCard {
+  width: 100%;
+  max-width: 600px;
+  height: 800px;
+  perspective: 1000px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.invCard:hover {
+  transform: scale(1.02);
+}
+
+.invCard:active {
+  transform: scale(0.98);
+}
+
+/* Simple mini flip text */
+.mini-flip-text {
+  font-family: "Georgia", serif;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 1);
+  text-align: center;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.invBack .mini-flip-text {
+  color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0;
+}
+
+.invSide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--wedding-white);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(139, 75, 107, 0.2);
+  backface-visibility: hidden;
+  transition: transform 1.2s ease-in-out;
+  overflow: hidden;
+  border: 2px solid rgba(139, 75, 107, 0.1);
+}
+
+.invFront {
+  transform: rotateY(0deg);
+}
+
+.invBack {
+  transform: rotateY(180deg);
+}
+
+.invCard.flipped .invFront {
+  transform: rotateY(-180deg);
+}
+
+.invCard.flipped .invBack {
+  transform: rotateY(0deg);
+}
+
+/* FRONT SIDE STYLES */
+/* .invHeader {
+  text-align: center;
+  padding: 2rem 2rem 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 75, 107, 0.05) 0%,
+    rgba(215, 168, 158, 0.05) 100%
+  );
+} */
+
+.invHeader {
+  height: 100%;
+  align-content: center;
+  text-align: center;
+  padding: 2rem 2rem 1rem;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  /* Centers the photo perfectly */
+  background-position: center center;
+
+  /* Adds a semi-transparent pink layer over the image */
+  background-image:
+    linear-gradient(rgba(90, 20, 45, 0.5), rgba(90, 20, 45, 0.5)),
+    url(../../public/invitation.png);
+}
+.invEyebrow {
+  font-size: 1rem;
+  color: var(--wedding-burgundy);
+  letter-spacing: 4px;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-family: "Georgia", serif;
+  text-align: center;
+}
+
+.invMonogram {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(
+    135deg,
+    var(--wedding-burgundy) 0%,
+    var(--wedding-rose) 100%
+  );
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--wedding-cream);
+  box-shadow: 0 5px 15px rgba(139, 75, 107, 0.2);
+}
+
+.monogram-text {
+  font-family: "Dancing Script", cursive;
+  font-size: 2rem;
+  color: white;
+  font-weight: 700;
+}
+
+.invFamilies {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+}
+
+.invFamily {
+  text-align: center;
+  flex: 1;
+}
+
+.invFamilyName {
+  font-size: 1rem;
+  color: var(--wedding-brown);
+  font-style: italic;
+  line-height: 1.3;
+  margin-bottom: 0.3rem;
+}
+
+.invBody {
+  padding: 1rem 2rem 2rem;
+  text-align: center;
+}
+
+.invLine {
+  font-size: 1.1rem;
+  color: var(--wedding-burgundy);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  font-family: "Georgia", serif;
+  /* font-style: italic; */
+}
+
+.invPhotoSection {
+  position: relative;
+  margin: 2rem 0;
+  height: 200px;
+}
+
+.photoCollage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 4px solid var(--wedding-cream);
+  box-shadow: 0 8px 20px rgba(139, 75, 107, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo1 {
+  top: 0;
+  left: 10%;
+  transform: rotate(-8deg);
+  z-index: 1;
+}
+
+.photo2 {
+  top: 0;
+  right: 10%;
+  transform: rotate(12deg);
+  z-index: 1;
+}
+
+.photo3 {
+  bottom: 0;
+  left: 20%;
+  transform: rotate(6deg);
+  z-index: 1;
+}
+
+.photo4 {
+  bottom: 0;
+  right: 20%;
+  transform: rotate(-10deg);
+  z-index: 1;
+}
+
+.invMonogramOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 75, 107, 0.9) 0%,
+    rgba(215, 168, 158, 0.9) 100%
+  );
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid var(--wedding-white);
+  box-shadow: 0 10px 30px rgba(139, 75, 107, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.overlay-monogram {
+  font-family: "Dancing Script", cursive;
+  font-size: 2.5rem;
+  color: white;
+  font-weight: 700;
+}
+
+.invNames {
+  font-family: "Georgia";
+  font-size: 5rem;
+  color: var(--wedding-burgundy);
+  margin: 1.5rem 0 1rem;
+  font-weight: 500;
+  text-shadow: 2px 2px 4px rgba(139, 75, 107, 0.1);
+}
+
+.invDate {
+  font-size: 1.2rem;
+  color: var(--wedding-brown);
+  font-weight: 600;
+  letter-spacing: 3px;
+  margin-top: 1rem;
+}
+
+.saveTheDateWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  /* Centers the photo perfectly */
+  background-position: center center;
+
+  /* Background image will be set inline in the component */
+}
+
+.saveTheDateWrapper .std-page {
+  height: 100%;
+  border-radius: 20px;
+}
+
+/* Formal Invitation Styles */
+.formal-invitation {
+  height: 89%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.invitation-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.joyous-hearts {
+  font-family: "Georgia", serif;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  font-weight: 400;
+  opacity: 0.9;
+  text-transform: uppercase;
+}
+
+.monogram {
+  font-family: "Luxurious Script", "Georgia", italic;
+  font-size: 4rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  margin: 0.5rem 0;
+}
+
+.invitation-parents {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 2rem;
+  margin: 1rem 0 0rem 0; /* Reduced from 1rem 0 to move higher */
+  flex-wrap: wrap;
+  line-height: 1;
+}
+
+.parent-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.parent-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.parent-name {
+  font-family:
+    "Luxurious Script", Tofu, "Apple Chancery", "Dancing Script",
+    "Brush Script MT", "Georgia", italic, "Lucida Handwriting", cursive;
+  font-size: 2.4rem;
+  font-weight: 500;
+  line-height: 1.1;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.conjunction {
+  font-family: "Georgia", serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.invitation-text {
+  font-family: "Georgia", serif;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  line-height: 1.6;
+  font-weight: 400;
+  opacity: 0.95;
+  margin: 2rem 0 3rem 0; /* Negative top margin to move much higher, increased bottom margin */
+  text-transform: uppercase;
+}
+
+.couple-names {
+  font-family:
+    "Luxurious Script", Tofu, "Apple Chancery", "Dancing Script",
+    "Brush Script MT", "Georgia";
+  font-size: 3.5rem;
+  font-weight: 500;
+  color: white;
+  margin: 1rem 0 1rem 0; /* Increased margins to position in middle */
+}
+
+.wedding-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.wedding-day {
+  font-family: "Georgia", serif;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.wedding-date {
+  font-family: "Georgia", serif;
+  font-size: 1.4rem;
+  letter-spacing: 4px;
+  font-weight: 400;
+  margin: 0.5rem 0;
+}
+
+.wedding-time {
+  font-family: "Georgia", serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.wedding-venue {
+  font-family: "Georgia", serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  font-weight: 400;
+  opacity: 0.9;
+  text-transform: uppercase;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .invCard {
+    max-width: 90%;
+    height: 700px;
+  }
+
+  .invHeader {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .invBody {
+    padding: 1rem 1.5rem 2rem;
+  }
+
+  .invFamilyName {
+    font-size: 1rem;
+  }
+
+  .invNames {
+    font-size: 3rem;
+  }
+
+  .std-names-large {
+    font-size: 3rem;
+  }
+
+  .photo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .invMonogramOverlay {
+    width: 80px;
+    height: 80px;
+  }
+
+  .overlay-monogram {
+    font-size: 2rem;
+  }
+
+  /* Formal invitation mobile styles */
+  .formal-invitation {
+    padding: 2rem 1.5rem;
+  }
+
+  .parent-section {
+    min-width: auto;
+  }
+
+  .monogram {
+    font-size: 3rem;
+  }
+
+  .invitation-text {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+  }
+
+  .couple-names {
+    font-size: 2.8rem;
+  }
+
+  .wedding-date {
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+  }
+
+  .wedding-day {
+    font-size: 1rem;
+  }
+
+  .wedding-time,
+  .wedding-venue {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .invCard {
+    height: 600px;
+  }
+
+  .invNames {
+    font-size: 2.5rem;
+  }
+
+  .std-names-large {
+    font-size: 2.5rem;
+  }
+
+  .photo {
+    width: 80px;
+    height: 80px;
+  }
+
+  /* Formal invitation small mobile styles */
+  .formal-invitation {
+    padding: 1.5rem 1rem;
+  }
+
+  .invitation-parents {
+    gap: 1rem; /* Smaller gap on very small screens */
+  }
+
+  .monogram {
+    font-size: 2.5rem;
+  }
+
+  .parent-name {
+    font-size: 1.4rem;
+    line-height: 0.5;
+  }
+
+  .invitation-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.5px;
+  }
+
+  .couple-names {
+    font-size: 2.2rem;
+  }
+
+  .wedding-date {
+    font-size: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .wedding-day {
+    font-size: 0.9rem;
+  }
+
+  .wedding-time,
+  .wedding-venue {
+    font-size: 0.7rem;
+  }
+}

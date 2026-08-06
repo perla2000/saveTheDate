@@ -1,135 +1,909 @@
-/* Global background */
-.guest-container {
-  min-height: 100vh;
-  background-color: #f4f3f0; /* Anti-Flash White */
-  font-family: "Arial", sans-serif;
-  padding-top: 80px;
-  padding-bottom: 40px;
-  /* background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat;
-  background-image: url(../../public/envelope.png); */
+/* RSVP page theme - Updated to match wedding color scheme */
+:root {
+  /* Colors from the beautiful RSVP design */
+  --rsvp-primary: #ffffff; /* White text for readability */
+  --rsvp-primary-hover: #f0f0f0; /* Light gray for hover */
+  --rsvp-text: #ffffff; /* White main text color */
+  --rsvp-border: #ffffff; /* White borders */
+  --rsvp-shadow: 0 10px 30px rgba(139, 107, 135, 0.15);
+  --rsvp-radius: 25px; /* Rounded corners like in design */
 }
 
-/* Main wrapper */
-.guest-main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* Use on the RSVP section wrapper (no content changes needed) */
+.rsvp-container {
+  width: 100%;
+  max-width: 1200px;
+  background: transparent;
+  padding: 3rem 1.5rem;
+  font-family: "Playfair Display", serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--rsvp-text);
 }
 
-/* Header */
-.guest-header {
+/* Title - Wedding RSVP Style */
+.rsvp-title {
+  font-size: 3.5rem;
+  color: #ffffff;
+  font-weight: 400;
+  letter-spacing: 4px;
+  line-height: 1.1;
+  font-family: "Playfair Display", serif;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.rsvp-subtitle {
+  font-size: 1.4rem;
+  color: #ffffff;
+  font-style: italic;
+  margin: 1rem 0 0 0;
+  letter-spacing: 1px;
   text-align: center;
-  margin-bottom: 40px;
+  font-weight: 300;
+  opacity: 0.95;
+  line-height: 1.4;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
 }
 
-.guest-header h1 {
-  font-size: 2rem;
-  color: #7b354b; /* Deep Puce */
-  margin-bottom: 10px;
+.rsvp-radio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.45);
+}
+.rsvp-radio:hover {
+  border-color: var(--rsvp-border);
 }
 
-.guest-header p {
-  font-size: 1rem;
-  color: #7b354b; /* Catawba 7b354b*/
+/* Submit button - Styled like Get Directions button */
+.rsvp-submit {
+  margin-top: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.3s ease;
+  padding: 10px 20px;
+  border-radius: 15px;
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  font-size: 1.25rem;
+  opacity: 0.95;
+  line-height: 1.5;
+  color: #fff;
+  border: none;
+  font-family: "Georgia", serif;
+  text-align: center;
 }
 
-/* Card */
-.guest-card {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+.rsvp-submit:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.rsvp-submit:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.rsvp-submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(255, 255, 255, 0.1);
+  text-shadow: none;
+}
+
+/* Header section styling - Match Location header positioning */
+.location-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Add decorative flourishes */
+.location-header .rsvp-title::before,
+.location-header .rsvp-title::after {
+  font-size: 1.5rem;
+  color: var(--rsvp-primary);
+  opacity: 0.6;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.location-header .rsvp-title::before {
+  left: -3rem;
+}
+
+.location-header .rsvp-title::after {
+  right: -3rem;
+}
+
+.location-header .rsvp-title {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+/* Mobile responsiveness for guest items and inputs */
+@media (max-width: 768px) {
+  .rsvp-title {
+    font-size: 2.8rem;
+    letter-spacing: 3px;
+  }
+
+  .rsvp-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Hide decorative flourishes on mobile */
+  .location-header .rsvp-title::before,
+  .location-header .rsvp-title::after {
+    display: none;
+  }
+
+  /* Match Location header mobile positioning */
+  .location-header {
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  .guest-list {
+    gap: 1rem;
+    margin-bottom: 2rem;
+    margin: 2rem 1rem;
+  }
+
+  .guest-item {
+    padding: 1.5rem;
+    gap: 1rem;
+    /* Keep horizontal layout on tablets */
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .guest-info {
+    width: auto;
+    flex: 1;
+  }
+
+  .guest-name-input {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .guest-name-field {
+    font-size: 1rem;
+    padding: 10px 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .guest-name {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .guest-buttons {
+    gap: 0.5rem;
+    flex-shrink: 0;
+    justify-content: flex-end;
+  }
+
+  .rsvp-choice {
+    padding: 12px 18px;
+    font-size: 0.85rem;
+    min-width: 80px;
+    flex: none;
+  }
+
+  .remove-guest-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .new-family-notice {
+    margin: 0.75rem 0 1.5rem 0;
+    padding: 0.875rem;
+  }
+
+  .new-family-notice p {
+    font-size: 0.95rem;
+  }
+
+  .rsvp-submit {
+    height: 52px;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Match Location header small mobile positioning */
+  .location-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .rsvp-title {
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+
+  .rsvp-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .guest-list {
+    gap: 0.875rem;
+    margin-bottom: 1.75rem;
+    padding: 0;
+    margin: 1.75rem 0.5rem;
+  }
+
+  .guest-item {
+    padding: 1.25rem;
+    position: relative;
+    /* Keep horizontal layout but allow text to wrap */
+    flex-direction: row;
+    gap: 1rem;
+    align-items: flex-start; /* Align to top when text wraps */
+    flex-wrap: nowrap;
+  }
+
+  .guest-info {
+    flex: 1;
+    min-width: 120px; /* Increased minimum width for more space */
+    max-width: calc(100% - 140px); /* More space for name */
+    margin-right: 1rem; /* More margin for separation */
+  }
+
+  .guest-name-input {
+    gap: 0.375rem;
+    flex-direction: row;
+    position: relative;
+    width: 100%;
+  }
+
+  .guest-name-field {
+    font-size: 0.9rem;
+    padding: 8px 35px 8px 12px; /* Right padding for remove button */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .remove-guest-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .guest-name {
+    font-size: 0.75rem; /* Further reduced font size */
+    margin-bottom: 0;
+    text-align: left;
+    white-space: normal; /* Allow wrapping */
+    word-wrap: break-word; /* Break long words */
+    overflow-wrap: break-word; /* Modern property for word breaking */
+    line-height: 1.2; /* Tighter line spacing for smaller font */
+    max-width: 100%;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .guest-buttons {
+    gap: 0.3rem; /* Reduced gap between buttons */
+    flex-shrink: 0;
+    justify-content: flex-end;
+    width: 110px; /* Reduced width to give more space to name */
+    display: flex;
+    padding-top: 2px; /* Small padding to align with wrapped text */
+  }
+
+  .rsvp-choice {
+    font-size: 0.75rem; /* Smaller font for buttons */
+    padding: 6px 10px; /* Reduced padding */
+    min-width: 50px; /* Smaller minimum width */
+    flex: none;
+  }
+
+  .add-guest-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    margin: 1rem 0 2rem 0;
+  }
+
+  .rsvp-submit {
+    height: 48px;
+    font-size: 1rem;
+    margin-top: 1.75rem;
+  }
+}
+.guest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 2rem 0;
+  width: 100%;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  /* Apply same styling as gift-message */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px); /* iOS Safari support */
+  border-radius: 25px;
+  padding: 3rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.guest-list:hover {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .guest-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  transition: background-color 0.2s ease-in-out;
+  padding: 1.5rem;
+  border-radius: var(--rsvp-radius);
+  background: transparent; /* Removed background color */
+  border: 1px solid var(--rsvp-border);
+  box-shadow: var(--rsvp-shadow);
+  transition: all 0.3s ease;
+  position: relative;
+  gap: 1rem; /* Add gap between name and buttons */
+  flex-wrap: nowrap; /* Keep everything on same line */
 }
 
-/* Guest info */
+.guest-item:hover {
+  background: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(139, 75, 107, 0.1);
+}
+
 .guest-info {
   display: flex;
   align-items: center;
-  gap: 12px;
   flex: 1;
+  min-width: 0; /* Allow content to shrink if needed */
+}
+
+.guest-item:hover {
+  background: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(139, 75, 107, 0.1);
 }
 
 .guest-name {
-  font-size: 1rem;
-  color: #7b354b;
-  /* #7b354b; */
-}
-
-/* Buttons */
-.guest-buttons button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.guest-buttons button.yes {
-  background-color: #fceaf0; /* Lavender Blush */
-  color: #7b354b; /* Catawba */
-}
-
-.guest-buttons button.yes.active {
-  background-color: #7b354b; /* Catawba */
-  color: #fceaf0; /* Lavender Blush */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.guest-buttons button.no {
-  background-color: #fceaf0; /* Lavender Blush */
-  color: #7b354b; /* Catawba */
-}
-
-.guest-buttons button.no.active {
-  background-color: #7b354b; /* Catawba */
-  color: #fceaf0; /* Lavender Blush */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.guest-buttons button:hover:not(.active) {
-  background-color: #fceaf0; /* Pale Chestnut hover */
-}
-
-/* Submit button */
-.submit-btn {
-  margin-top: 20px;
-  padding: 12px 24px;
-  background-color: #ae6172; /* Deep Puce */
-  color: #fceaf0; /* Lavender Blush */
-  border: none;
-  border-radius: 12px;
   font-weight: 600;
+  color: #ffffff;
+  font-size: 1rem;
+  text-align: left;
+  margin: 0; /* Remove any margins */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.guest-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-shrink: 0; /* Don't let buttons shrink */
+}
+
+.rsvp-choice {
+  padding: 8px 16px;
+  border-radius: var(--rsvp-radius);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  min-width: 60px;
+  text-align: center;
+  transition: all 0.3s ease;
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 1;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.submit-btn:hover {
-  background-color: #994f61; /* Slightly darker Deep Puce */
+.rsvp-choice:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 75, 107, 0.2);
+  background: rgba(215, 168, 158, 0.2);
 }
 
-/* Responsive */
-@media (min-width: 640px) {
-  .guest-header h1 {
+.rsvp-choice.active {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-shadow: none;
+}
+
+.rsvp-choice:hover {
+  background: var(--rsvp-primary-hover);
+  color: white;
+  border-color: var(--rsvp-primary-hover);
+}
+
+/* Custom Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 25px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease-out;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  padding: 2rem 2rem 1rem 2rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-header.success {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.05) 0%,
+    rgba(34, 197, 94, 0.02) 100%
+  );
+}
+
+.modal-header.error {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.05) 0%,
+    rgba(239, 68, 68, 0.02) 100%
+  );
+}
+
+.modal-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  animation: modalIconBounce 0.6s ease-out;
+}
+
+@keyframes modalIconBounce {
+  0%,
+  20% {
+    transform: scale(0.6);
+  }
+  40% {
+    transform: scale(1.1);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.modal-body {
+  padding: 1.5rem 2rem;
+}
+
+.modal-message {
+  color: #ffffff;
+  font-size: 1.1rem;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  font-weight: 400;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.modal-footer {
+  padding: 1rem 2rem 2rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-ok-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 12px 32px;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Georgia", serif;
+  min-width: 100px;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.modal-ok-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-ok-button:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Mobile responsiveness for modal */
+@media (max-width: 768px) {
+  .modal-content {
+    margin: 1rem;
+    max-width: none;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .modal-message {
+    font-size: 1rem;
+  }
+
+  .uuid-display {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .uuid-text {
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .copy-btn {
+    align-self: center;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .modal-icon {
     font-size: 2.5rem;
   }
-  .guest-name {
-    font-size: 1.1rem;
+
+  .modal-message {
+    font-size: 0.95rem;
+  }
+
+  .uuid-container {
+    margin-top: 1rem;
+    padding: 0.75rem;
+  }
+
+  .uuid-text {
+    font-size: 0.75rem;
+  }
+
+  .copy-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .uuid-note {
+    font-size: 0.75rem;
+  }
+
+  .modal-ok-button {
+    padding: 10px 24px;
+    font-size: 0.9rem;
   }
 }
 
-@media (min-width: 768px) {
-  .guest-main {
-    padding: 0 40px;
+/* New Family Input Styles */
+.new-family-notice {
+  text-align: center;
+  margin: 1rem 0 2rem 0;
+  padding: 1rem;
+  background: rgba(160, 92, 111, 0.1);
+  border-radius: var(--rsvp-radius);
+  border: 1px solid rgba(160, 92, 111, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.new-family-notice p {
+  margin: 0;
+  color: #ffffff;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.4;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.guest-name-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  position: relative;
+}
+
+.guest-name-field {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid rgba(160, 92, 111, 0.3);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #7a2e3a;
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-family: "Playfair Display", serif;
+  transition: all 0.3s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.guest-name-field:focus {
+  border-color: var(--rsvp-primary);
+  box-shadow: 0 0 0 3px rgba(160, 92, 111, 0.1);
+  background: rgba(255, 255, 255, 1);
+}
+
+.guest-name-field::placeholder {
+  color: rgba(160, 92, 111, 0.6);
+  font-style: italic;
+}
+
+.remove-guest-btn {
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  color: rgba(239, 68, 68, 0.8);
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.remove-guest-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.8);
+  color: rgba(239, 68, 68, 1);
+  transform: scale(1.05);
+}
+
+.add-guest-btn {
+  margin: 1rem 0 2rem 0;
+  padding: 12px 24px;
+  border: 2px dashed rgba(160, 92, 111, 0.5);
+  background: rgba(160, 92, 111, 0.05);
+  border-radius: var(--rsvp-radius);
+  color: var(--rsvp-primary);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: "Playfair Display", serif;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.add-guest-btn:hover {
+  background: rgba(160, 92, 111, 0.1);
+  border-color: var(--rsvp-primary);
+  border-style: solid;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(160, 92, 111, 0.2);
+}
+
+/* Responsive adjustments for new input fields */
+@media (max-width: 768px) {
+  .guest-name-field {
+    font-size: 1rem;
+    padding: 10px 14px;
   }
+
+  .remove-guest-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .new-family-notice {
+    margin: 0.75rem 0 1.5rem 0;
+    padding: 0.875rem;
+  }
+
+  .new-family-notice p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .guest-name-input {
+    gap: 0.375rem;
+  }
+
+  .guest-name-field {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .remove-guest-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .add-guest-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+}
+
+/* UUID container styles for modal */
+.uuid-container {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+}
+
+.uuid-label {
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-family: "Playfair Display", serif;
+  font-size: 0.9rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.uuid-display {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.uuid-text {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: "Courier New", monospace;
+  font-size: 0.75rem;
+  color: #ffffff;
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+  word-break: break-all;
+  line-height: 1.3;
+  max-height: 60px;
+  overflow-y: auto;
+}
+
+.copy-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.copy-btn.copied {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.6);
+  color: #ffffff;
+}
+
+.uuid-note {
+  font-size: 0.8rem;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.4;
+  opacity: 0.8;
+  font-style: italic;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }

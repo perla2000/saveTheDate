@@ -1,0 +1,65 @@
+/* Shared Background Component Styles */
+.shared-background-container {
+  width: 100%;
+  position: relative;
+}
+
+/* Fixed background div */
+.fixed-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(99, 86, 90, 0.5), rgba(90, 20, 45, 0.5)),
+    url(../../public/yarze.png) center / cover no-repeat;
+}
+
+/* Content container */
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+  padding: 2rem 0;
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Add separator lines between components */
+.content > *:not(:last-child) {
+  position: relative;
+}
+
+.content > *:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -2rem;
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 20%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.3) 80%,
+    transparent 100%
+  );
+  z-index: 10;
+}
+
+/* Decorative separator with dots */
+.content > *:not(:last-child)::before {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -2.2rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  z-index: 11;
+}

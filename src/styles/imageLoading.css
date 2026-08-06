@@ -1,0 +1,213 @@
+/* Cached image styles - instant display */
+.cached {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  animation: none !important;
+  background: transparent !important;
+}
+
+.cached.loading {
+  opacity: 1;
+  transform: scale(1);
+  background: transparent;
+}
+
+/* Progressive Image Loading Styles */
+
+/* Base image styles for smooth loading */
+.progressive-image {
+  position: relative;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+/* Loading state - shimmer effect */
+.progressive-image.loading {
+  background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Loaded state - fade in effect */
+.progressive-image.loaded {
+  background: transparent;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Lazy loading specific styles */
+.lazy-image {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.lazy-image.loading {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+.lazy-image.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Blur-to-focus effect for progressive loading */
+.blur-load {
+  filter: blur(5px);
+  transition: filter 0.6s ease;
+}
+
+.blur-load.loaded {
+  filter: blur(0);
+}
+
+/* Save The Date specific optimizations */
+.std-photo {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.std-photo.loading {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmer-diagonal 2s infinite;
+}
+
+@keyframes shimmer-diagonal {
+  0% {
+    background-position: -200% -200%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+/* Invitation page optimizations */
+.invitation-image {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.invitation-image.loading {
+  background: radial-gradient(
+    circle,
+    rgba(240, 224, 224, 0.3) 0%,
+    rgba(240, 224, 224, 0.1) 100%
+  );
+}
+
+/* Critical image priority loading */
+.critical-image {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px; /* Fallback size */
+}
+
+/* Background image loading placeholder */
+.bg-image-placeholder {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  position: relative;
+}
+
+.bg-image-placeholder::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: rgba(255, 255, 255, 0.6);
+  animation: loading-spinner 1s linear infinite;
+}
+
+@keyframes loading-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bg-image-placeholder.loaded::before {
+  display: none;
+}
+
+/* Performance optimizations */
+.optimized-image {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 400px;
+  will-change: transform;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  .progressive-image {
+    contain: layout style paint;
+  }
+
+  .lazy-image {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Reduce animation complexity on mobile */
+  .progressive-image.loading {
+    animation-duration: 2s;
+  }
+}
+
+/* High-resolution display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .optimized-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .progressive-image,
+  .lazy-image,
+  .blur-load {
+    transition: none;
+    animation: none;
+  }
+
+  .progressive-image.loading {
+    background: #f0f0f0;
+    animation: none;
+  }
+}
