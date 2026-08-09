@@ -29,6 +29,10 @@ export const API_ENDPOINTS = {
   UPDATE_FIN: (section, id) => `${API_BASE_URL}/api/fin/${section}/${id}`,
   DELETE_FIN: (section, id) => `${API_BASE_URL}/api/fin/${section}/${id}`,
 
+  // Branding
+  GET_BRANDING:    () => `${API_BASE_URL}/api/branding`,
+  UPDATE_BRANDING: () => `${API_BASE_URL}/api/branding`,
+
   // Admin
   VERIFY_PASSCODE:  () => `${API_BASE_URL}/api/admin/verify-passcode`,
   IMPORT_FAMILIES:  () => `${API_BASE_URL}/api/admin/import-families`,

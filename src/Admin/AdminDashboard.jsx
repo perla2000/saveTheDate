@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { API_ENDPOINTS } from "../config/api";
 import API_BASE_URL from "../config/api";
+import BrandingTab from "./BrandingTab";
 
 const AdminDashboard = ({ onLogout, clientConfig }) => {
   const [activeTab, setActiveTab] = useState("rsvp");
@@ -547,10 +548,11 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
       new Date(fam.createdAt).getTime() === new Date(fam.updatedAt).getTime();
 
     return (fam.attendees || []).map((att) => ({
-      familyId: fam._id,
-      name: att.name,
-      attending: isPending ? null : att.attending,
-      updatedAt: fam.updatedAt,
+      familyId:   fam._id,
+      familyName: fam.familyName || fam._id,
+      name:       att.name,
+      attending:  isPending ? null : att.attending,
+      updatedAt:  fam.updatedAt,
     }));
   });
 
@@ -622,7 +624,7 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
 
         // Check for required headers
         const headers = jsonData[0];
-        const requiredHeaders = ["guest name", "attended", "familyId"];
+        const requiredHeaders = ["guest name", "family name"];
         const missingHeaders = requiredHeaders.filter(
           (header) =>
             !headers.some(
@@ -636,51 +638,43 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
           return;
         }
 
+        // Find column indices dynamically
+        const headerRow = headers.map((h) => (h ? h.toString().toLowerCase().trim() : ""));
+        const nameIdx   = headerRow.indexOf("guest name");
+        const familyIdx = headerRow.indexOf("family name");
+
         // Parse data rows
         const dataRows = jsonData.slice(1);
         const processedRows = [];
         const errors = [];
 
         dataRows.forEach((row, index) => {
-          // Skip completely empty rows
-          if (row.every((cell) => !cell || cell.toString().trim() === "")) {
-            return;
-          }
+          if (row.every((cell) => !cell || cell.toString().trim() === "")) return;
 
           const rowData = {
-            guestName: row[0] ? row[0].toString().trim() : "",
-            attended: row[1],
-            familyId: row[2] ? row[2].toString().trim() : "",
+            guestName:  row[nameIdx]   ? row[nameIdx].toString().trim()   : "",
+            familyName: row[familyIdx] ? row[familyIdx].toString().trim() : "",
           };
 
-          // Validate required fields
-          if (!rowData.guestName) {
-            errors.push(`Row ${index + 2}: Missing guest name`);
-          }
-          if (!rowData.familyId) {
-            errors.push(`Row ${index + 2}: Missing familyId`);
-          }
+          if (!rowData.guestName)  errors.push(`Row ${index + 2}: Missing guest name`);
+          if (!rowData.familyName) errors.push(`Row ${index + 2}: Missing family name`);
 
           processedRows.push({
             ...rowData,
             rowNumber: index + 2,
-            isValid: rowData.guestName && rowData.familyId,
+            isValid: !!(rowData.guestName && rowData.familyName),
           });
         });
 
         setParsedData(processedRows);
 
-        // Create preview data (first 10 rows)
         setPreviewData({
-          headers: ["Guest Name", "Attended", "Family ID", "Status"],
-          rows: processedRows
-            .slice(0, 10)
-            .map((row) => [
-              row.guestName,
-              row.attended?.toString() || "",
-              row.familyId,
-              row.isValid ? "✓ Valid" : "❌ Invalid",
-            ]),
+          headers: ["Guest Name", "Family Name", "Status"],
+          rows: processedRows.slice(0, 10).map((row) => [
+            row.guestName,
+            row.familyName,
+            row.isValid ? "✓ Valid" : "❌ Invalid",
+          ]),
           totalRows: processedRows.length,
           validRows: processedRows.filter((r) => r.isValid).length,
           errors,
@@ -720,11 +714,10 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
       const response = await axios.post(
         `${API_BASE_URL}/api/admin/import-families`,
         {
-          passcode: "190599", // In a real app, store this securely
+          passcode: clientConfig?.passcode,
           rows: validRows.map((row) => ({
-            guestName: row.guestName,
-            attended: row.attended,
-            familyId: row.familyId,
+            guestName:  row.guestName,
+            familyName: row.familyName,
           })),
         },
       );
@@ -785,6 +778,11 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
           onClick={() => setActiveTab("financials")}
           className={`admin-tab-btn ${activeTab === "financials" ? "active" : ""}`}>
           Financials
+        </button>
+        <button
+          onClick={() => setActiveTab("branding")}
+          className={`admin-tab-btn ${activeTab === "branding" ? "active" : ""}`}>
+          Branding
         </button>
         <button
           onClick={() => setActiveTab("tables")}
@@ -942,9 +940,9 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
                                       <span className="rsvp-family-label">
                                         Family
                                       </span>
-                                      <code className="rsvp-family-id-chip">
-                                        {familyId}
-                                      </code>
+                                      <span className="rsvp-family-id-chip">
+                                        {rows[0]?.familyName || familyId}
+                                      </span>
                                     </div>
                                   </td>
                                   <td />
@@ -2568,6 +2566,13 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
           </div>
         </div>
       )}
+      {/* ── Branding Tab ──────────────────────────────────────────────────── */}
+      {activeTab === "branding" && (
+        <div className="admin-content">
+          <BrandingTab clientConfig={clientConfig} />
+        </div>
+      )}
+
     </div>
   );
 };

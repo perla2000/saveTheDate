@@ -38,7 +38,7 @@ const WeddingCountdown = () => {
       date: "20260725",
       startTime: "190000",
       endTime: "240000",
-      location: "Yarze Officers Club",
+      location: "La Grande Maison Harissa",
       description: "Join us in celebrating the wedding of Justin and Yara!",
     };
 

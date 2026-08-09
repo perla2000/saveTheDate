@@ -3,10 +3,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
 
+const ENV_CLIENT_ID = process.env.REACT_APP_CLIENT_ID || null;
+
 // Bootstrap the header immediately from whatever is already in sessionStorage
-// (or the hardcoded fallback) so requests made before the useEffect fires are covered.
+// (or the hardcoded env var) so requests made before the useEffect fires are covered.
 axios.defaults.headers.common["x-client-id"] =
-  sessionStorage.getItem("clientId") || "justin-yara";
+  ENV_CLIENT_ID || sessionStorage.getItem("clientId") || "justin-yara";
 
 const ClientContext = createContext(null);
 
@@ -17,7 +19,8 @@ export const ClientProvider = ({ children }) => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("client") || sessionStorage.getItem("clientId") || "justin-yara";
+    // Priority: env var (per-deployment) → URL param → sessionStorage → fallback
+    const id = ENV_CLIENT_ID || params.get("client") || sessionStorage.getItem("clientId") || "justin-yara";
 
     sessionStorage.setItem("clientId", id);
     // Set globally so every axios call (in any file) gets the header automatically

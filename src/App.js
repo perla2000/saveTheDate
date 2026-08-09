@@ -11,6 +11,7 @@ import SaveTheDate from "./SaveTheDate/SaveTheDate";
 import WeddingCountdown from "./WeddingCountdown/WeddingCountdown";
 import SharedBackground from "./components/SharedBackground";
 import { ClientProvider } from "./context/ClientContext";
+import { BrandingProvider } from "./context/BrandingContext";
 import { ImageLoadingProvider, useImageLoading } from "./hooks/useImageLoading";
 
 // These images must be decoded before the card can open
@@ -112,7 +113,8 @@ function AppContent() {
     }
   }, [location.search]);
 
-  const isAdmin = location.pathname.startsWith("/admin");
+  const isAdmin   = location.pathname.startsWith("/admin");
+  const isPreview = new URLSearchParams(location.search).get("preview") === "true";
 
   // On the admin route skip loading screen and music entirely
   if (isAdmin) {
@@ -120,6 +122,17 @@ function AppContent() {
       <Routes>
         <Route path="/admin" element={<Admin />} />
       </Routes>
+    );
+  }
+
+  // Preview mode: skip tap/loading screen, show content immediately
+  if (isPreview) {
+    return (
+      <div className="root-class content-visible">
+        <Routes>
+          <Route path="/" element={<DetailsPage familyId={null} onGuestDataLoaded={() => {}} />} />
+        </Routes>
+      </div>
     );
   }
 
@@ -184,9 +197,11 @@ function App() {
   return (
     <ImageLoadingProvider>
       <ClientProvider>
-        <PreloadCriticalImages />
-        <CriticalImageGate />
-        <AppContent />
+        <BrandingProvider>
+          <PreloadCriticalImages />
+          <CriticalImageGate />
+          <AppContent />
+        </BrandingProvider>
       </ClientProvider>
     </ImageLoadingProvider>
   );
