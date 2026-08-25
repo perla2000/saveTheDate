@@ -12,9 +12,10 @@
   right: 0;
   bottom: 0;
   z-index: -1;
-  background:
-    linear-gradient(rgba(99, 86, 90, 0.5), rgba(90, 20, 45, 0.5)),
-    url(../../public/yarze.png) center / cover no-repeat;
+  background-color: #111;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Content container */

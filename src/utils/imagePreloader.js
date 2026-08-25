@@ -56,30 +56,32 @@ class ImagePreloader {
     let loaded = 0;
     const results = [];
     
+    const loadWithProgress = async (src) => {
+      try {
+        const result = await this.preloadImage(src, priority);
+        loaded++;
+        
+        if (onProgress) {
+          onProgress(loaded, images.length, src);
+        }
+        
+        return { src, success: true, image: result };
+      } catch (error) {
+        loaded++;
+        
+        if (onProgress) {
+          onProgress(loaded, images.length, src);
+        }
+        
+        return { src, success: false, error };
+      }
+    };
+    
     // Process images in batches to avoid overwhelming the browser
     for (let i = 0; i < images.length; i += maxConcurrent) {
       const batch = images.slice(i, i + maxConcurrent);
       
-      const batchPromises = batch.map(async (src) => {
-        try {
-          const result = await this.preloadImage(src, priority);
-          loaded++;
-          
-          if (onProgress) {
-            onProgress(loaded, images.length, src);
-          }
-          
-          return { src, success: true, image: result };
-        } catch (error) {
-          loaded++;
-          
-          if (onProgress) {
-            onProgress(loaded, images.length, src);
-          }
-          
-          return { src, success: false, error };
-        }
-      });
+      const batchPromises = batch.map(src => loadWithProgress(src));
       
       const batchResults = await Promise.allSettled(batchPromises);
       results.push(...batchResults.map(r => r.value || r.reason));

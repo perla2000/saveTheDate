@@ -2034,9 +2034,12 @@
 }
 .fp-table:hover    { box-shadow: 0 6px 20px rgba(128,0,32,.25); }
 .fp-table.fp-dragging { cursor: grabbing; transform: scale(1.04); box-shadow: 0 10px 28px rgba(0,0,0,.22); z-index: 10; }
-.fp-shape-round     { border-radius: 50%; width: 110px; height: 110px; }
-.fp-shape-square    { border-radius: 10px; width: 110px; height: 110px; }
-.fp-shape-rectangle { border-radius: 10px; width: 150px; height: 90px; }
+.fp-shape-round     { border-radius: 50%;  width: 120px; height: 120px; }
+.fp-shape-square    { border-radius: 10px; width: 120px; height: 120px; }
+.fp-shape-rectangle { border-radius: 10px; width: 180px; height: 100px; }
+
+/* Wider label for rectangle tables */
+.fp-shape-rectangle .fp-table-name { max-width: 155px; }
 
 .fp-priority {
   position: absolute;

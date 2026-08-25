@@ -3,7 +3,7 @@
   max-width: 1200px;
   background: transparent;
   padding: 3rem 1.5rem;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   position: relative;
 }
 
@@ -83,7 +83,7 @@
   font-size: 1rem;
   color: #ffffff;
   margin: 0.5rem 0;
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
@@ -140,7 +140,7 @@
   color: #ffffff;
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
@@ -166,7 +166,7 @@
   font-size: 0.95rem;
   margin: 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   display: grid;
   grid-template-columns: auto 1fr 50px; /* Fixed width for button column */
   align-items: center;
@@ -284,7 +284,7 @@
 
 .venue-name {
   font-size: 2rem;
-  color: #8b4b6b;
+  color: var(--brand-accent, #8b4b6b);
   margin-bottom: 1.5rem;
   text-align: center;
   font-weight: 600;
@@ -336,7 +336,7 @@
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-weight: 600;
   font-size: 1rem;
   text-transform: uppercase;
@@ -345,7 +345,7 @@
 }
 
 .directions-btn {
-  background: linear-gradient(135deg, #8b4b6b 0%, #c18e97 100%);
+  background: var(--brand-accent, #8b4b6b);
   color: white;
 }
 
@@ -441,7 +441,7 @@
 }
 
 .travel-info h3 {
-  color: #8b4b6b;
+  color: var(--brand-accent, #8b4b6b);
   font-size: 2rem;
   text-align: center;
   margin-bottom: 2rem;
@@ -467,7 +467,7 @@
 }
 
 .travel-option h4 {
-  color: #8b4b6b;
+  color: var(--brand-accent, #8b4b6b);
   font-size: 1.2rem;
   margin-bottom: 1rem;
 }

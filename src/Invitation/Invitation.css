@@ -1,16 +1,15 @@
 /* Wedding Invitation with Flipping Photos - Based on Your Design */
 :root {
-  --wedding-burgundy: #8b4b6b;
+  /* Legacy variables - now mapped to branding */
+  --wedding-burgundy: var(--brand-accent, #8b4b6b);
   --wedding-rose: #d7a89e;
-  --wedding-brown: #6b4423;
-  --wedding-cream: #f7f1f1;
+  --wedding-brown: var(--brand-text, #6b4423);
+  --wedding-cream: var(--brand-bg, #f7f1f1);
   --wedding-white: #ffffff;
-  --wedding-text: #4a3a3f;
+  --wedding-text: var(--brand-text, #4a3a3f);
 }
 .invMain {
-  background-image:
-    linear-gradient(rgba(90, 20, 45, 0.5), rgba(90, 20, 45, 0.5)),
-    url(../../public/yarze.png);
+  background-color: #111;
   background-position: center center;
   background-size: cover;
   background-attachment: fixed;
@@ -25,12 +24,12 @@
   width: 100%;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  background: linear-gradient(#e8d5d3 100%, #8b4b6b 20%, #f7f1f1 0%);
+  background: linear-gradient(#e8d5d3 100%, var(--brand-accent, #8b4b6b) 20%, var(--brand-bg, #f7f1f1) 0%);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
 }
 
 .invCard {
@@ -52,7 +51,7 @@
 
 /* Simple mini flip text */
 .mini-flip-text {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 0.8125rem;
   color: rgba(255, 255, 255, 1);
   text-align: center;
@@ -121,14 +120,7 @@
   border-radius: 20px;
   background-repeat: no-repeat;
   background-size: cover;
-
-  /* Centers the photo perfectly */
   background-position: center center;
-
-  /* Adds a semi-transparent pink layer over the image */
-  background-image:
-    linear-gradient(rgba(90, 20, 45, 0.5), rgba(90, 20, 45, 0.5)),
-    url(../../public/invitation.png);
 }
 .invEyebrow {
   font-size: 1rem;
@@ -137,7 +129,7 @@
   font-weight: 500;
   margin-bottom: 1rem;
   text-transform: uppercase;
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   text-align: center;
 }
 
@@ -196,7 +188,7 @@
   color: var(--wedding-burgundy);
   line-height: 1.5;
   margin-bottom: 1.5rem;
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   /* font-style: italic; */
 }
 
@@ -290,7 +282,7 @@
 }
 
 .invNames {
-  font-family: "Georgia";
+  font-family: var(--brand-font, "Georgia");
   font-size: 5rem;
   color: var(--wedding-burgundy);
   margin: 1.5rem 0 1rem;
@@ -347,7 +339,7 @@
 }
 
 .joyous-hearts {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 0.9rem;
   letter-spacing: 3px;
   font-weight: 400;
@@ -400,13 +392,13 @@
 }
 
 .conjunction {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 1rem;
   font-weight: 400;
 }
 
 .invitation-text {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 0.8rem;
   letter-spacing: 1.5px;
   line-height: 1.6;
@@ -434,7 +426,7 @@
 }
 
 .wedding-day {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 1.2rem;
   letter-spacing: 2px;
   font-weight: 600;
@@ -442,7 +434,7 @@
 }
 
 .wedding-date {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 1.4rem;
   letter-spacing: 4px;
   font-weight: 400;
@@ -450,7 +442,7 @@
 }
 
 .wedding-time {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 0.9rem;
   letter-spacing: 2px;
   font-weight: 400;
@@ -458,7 +450,7 @@
 }
 
 .wedding-venue {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 0.9rem;
   letter-spacing: 2px;
   font-weight: 400;

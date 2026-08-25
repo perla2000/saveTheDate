@@ -1,0 +1,109 @@
+/* ══════════════════════════════════════════════════════════════════════
+   LAYOUT ORIENTATION STYLES
+   Controls vertical vs horizontal scrolling layout
+══════════════════════════════════════════════════════════════════════ */
+
+/* ── Default: Vertical Layout (stack pages top to bottom) ── */
+body.layout-vertical .root-class {
+  display: flex;
+  flex-direction: column;
+}
+
+body.layout-vertical .full-screen-section {
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Horizontal Layout (pages side-by-side, scroll left-right) ── */
+body.layout-horizontal {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
+}
+
+body.layout-horizontal .root-class {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  width: max-content;
+}
+
+body.layout-horizontal .full-screen-section {
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100vw;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  overflow-y: auto; /* Allow vertical scroll within each page if content is tall */
+}
+
+/* Smooth horizontal scroll snapping */
+body.layout-horizontal {
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for cleaner look */
+body.layout-horizontal::-webkit-scrollbar {
+  display: none;
+}
+
+body.layout-horizontal {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* SharedBackground component adjustments for horizontal */
+body.layout-horizontal .shared-background-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+body.layout-horizontal .shared-background-container .content {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  height: 100vh;
+  width: max-content;
+  padding: 0;
+  gap: 0;
+}
+
+body.layout-horizontal .shared-background-container .content > * {
+  width: 100vw;
+  flex-shrink: 0;
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+  scroll-snap-align: start;
+}
+
+/* Remove separators in horizontal mode */
+body.layout-horizontal .content > *::after,
+body.layout-horizontal .content > *::before {
+  display: none;
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 768px) {
+  body.layout-horizontal .full-screen-section {
+    width: 100vw;
+  }
+  
+  body.layout-horizontal .shared-background-container .content > * {
+    padding: 1.5rem;
+  }
+}

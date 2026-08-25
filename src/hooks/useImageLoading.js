@@ -148,7 +148,7 @@ export function ImageLoadingProvider({ children }) {
     }
 
     // Check each component
-    for (const [component, data] of componentRules.entries()) {
+    for (const [, data] of componentRules.entries()) {
       const { loadedCount, maxRequired, images } = data;
 
       if (maxRequired !== null) {

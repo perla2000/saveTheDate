@@ -43,7 +43,7 @@
   font-family: "Luxurious Script", serif;
   font-size: 18px;
   font-weight: 400;
-  fill: #8e4b62;
+  fill: var(--brand-accent, #8e4b62);
   letter-spacing: 2px;
   opacity: 1;
   animation: 2.5s ease-in-out infinite;

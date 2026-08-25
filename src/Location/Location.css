@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 1200px;
   padding: 3rem 1.5rem;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   background: transparent;
 }
 
@@ -51,7 +51,7 @@
   align-items: center;
 }
 .location-button {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 1.25rem;
   opacity: 0.95;
   line-height: 1.5;
@@ -171,7 +171,7 @@
 
 .venue-name {
   font-size: 2rem;
-  color: #8b4b6b;
+  color: var(--brand-accent, #8b4b6b);
   margin-bottom: 1.5rem;
   text-align: center;
   font-weight: 600;
@@ -245,7 +245,7 @@
 }
 
 .date-number {
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-size: 2.5rem;
   font-weight: bold;
   color: white;
@@ -264,7 +264,7 @@
 }
 
 .countdown-title {
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-size: 1.5rem;
   color: white;
   margin-bottom: 1.5rem;
@@ -286,7 +286,7 @@
 }
 
 .countdown-number {
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-size: 2rem;
   font-weight: bold;
   color: white;
@@ -349,7 +349,7 @@
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-weight: 600;
   font-size: 1rem;
   text-transform: uppercase;
@@ -358,7 +358,7 @@
 }
 
 .directions-btn {
-  background: linear-gradient(135deg, #8b4b6b 0%, #c18e97 100%);
+  background: var(--brand-accent, #8b4b6b);
   color: white;
 }
 

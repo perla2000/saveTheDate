@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useClient } from "../context/ClientContext";
+import { useBranding } from "../context/BrandingContext";
 import "./WeddingCountdown.css";
 
 const WeddingCountdown = () => {
+  const { clientConfig } = useClient();
+  const branding = useBranding();
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -11,7 +15,9 @@ const WeddingCountdown = () => {
 
   // Countdown timer effect
   useEffect(() => {
-    const weddingDate = new Date("2026-07-25T19:00:00").getTime();
+    const weddingDateStr = branding?.weddingDate || clientConfig?.weddingDate || "2026-07-25";
+    const weddingTimeStr = branding?.weddingTime || clientConfig?.weddingTime || "19:00";
+    const weddingDate = new Date(`${weddingDateStr}T${weddingTimeStr}:00`).getTime();
 
     const timer = setInterval(() => {
       const now = new Date().getTime();
@@ -30,16 +36,21 @@ const WeddingCountdown = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [clientConfig, branding]);
 
   const addToGoogleCalendar = () => {
+    const weddingDateStr = branding?.weddingDate || clientConfig?.weddingDate || "2026-07-25";
+    const weddingTimeStr = branding?.weddingTime || clientConfig?.weddingTime || "19:00";
+    const formattedDate = weddingDateStr.replace(/-/g, "");
+    const formattedTime = weddingTimeStr.replace(/:/g, "") + "00";
+    
     const eventDetails = {
-      title: "Justin & Yara's Wedding",
-      date: "20260725",
-      startTime: "190000",
+      title: `${branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}'s Wedding`,
+      date: formattedDate,
+      startTime: formattedTime,
       endTime: "240000",
-      location: "La Grande Maison Harissa",
-      description: "Join us in celebrating the wedding of Justin and Yara!",
+      location: branding?.venue || clientConfig?.venue || "Yarze Officers Club",
+      description: `Join us in celebrating the wedding of ${branding?.coupleName || clientConfig?.coupleName || "Justin and Yara"}!`,
     };
 
     const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
@@ -70,7 +81,15 @@ const WeddingCountdown = () => {
               className="wedding-date clickable-date"
               onClick={addToGoogleCalendar}
               title="Add to Google Calendar">
-              <div className="date-number">25.07.26</div>
+              <div className="date-number">
+                {(branding?.weddingDate || clientConfig?.weddingDate)
+                  ? new Date(branding?.weddingDate || clientConfig?.weddingDate).toLocaleDateString("en-GB", { 
+                      day: "2-digit", 
+                      month: "2-digit", 
+                      year: "2-digit" 
+                    }).replace(/\//g, ".")
+                  : "25.07.26"}
+              </div>
               <div className="date-save">Tap to save to calendar</div>
             </div>
           </div>

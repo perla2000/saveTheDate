@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../config/api";
 
 const BrandingContext = createContext(null);
@@ -15,7 +15,48 @@ const FONT_URLS = {
   "Merriweather":       "https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap",
 };
 
-export const applyBranding = (branding) => {
+const DEFAULT_BRANDING = {
+  accentColor:        "#800020",
+  backgroundColor:    "#f7f1f1",
+  textColor:          "#4a3a3f",
+  fontFamily:         "Playfair Display",
+  couplePhotos:       [],
+  venuePhotos:        [],
+  flipPhotos:         [],
+  logo:               "",
+  showLoadingScreen:  true,
+  layoutOrientation:  "vertical",
+  autoScrollEnabled:  true,
+  // Text customization
+  coupleName:         "",
+  groomName:          "",
+  brideName:          "",
+  groomParents:       "",
+  brideParents:       "",
+  weddingDate:        "",
+  weddingTime:        "",
+  venue:              "",
+  venueAddress:       "",
+  giftAccountId:      "",
+  giftPhoneNumber:    "",
+  giftProviderName:   "",
+  saveTheDateSubtitle:"",
+  saveTheDateTitle:   "",
+  venueMapUrl:        "",
+  venueMapEmbedUrl:   "",
+  customPalettes:     [],
+  sections: [
+    { id: "intro",      label: "Intro",                     enabled: true, order: 0 },
+    { id: "invitation", label: "Invitation",                enabled: true, order: 1 },
+    { id: "countdown",  label: "Countdown / Save the Date", enabled: true, order: 2 },
+    { id: "timeline",   label: "Timeline",                  enabled: true, order: 3 },
+    { id: "location",   label: "Location",                  enabled: true, order: 4 },
+    { id: "rsvp",       label: "RSVP",                      enabled: true, order: 5 },
+    { id: "lovestory",  label: "Love Story",                enabled: true, order: 6 },
+  ],
+};
+
+export const applyBrandingCSS = (branding) => {
   if (!branding) return;
   const root = document.documentElement;
   if (branding.accentColor)     root.style.setProperty("--brand-accent", branding.accentColor);
@@ -23,7 +64,6 @@ export const applyBranding = (branding) => {
   if (branding.textColor)       root.style.setProperty("--brand-text",   branding.textColor);
   if (branding.fontFamily) {
     root.style.setProperty("--brand-font", `'${branding.fontFamily}', serif`);
-    // Load the font if not already loaded
     const url = FONT_URLS[branding.fontFamily];
     if (url && !document.querySelector(`link[href="${url}"]`)) {
       const link = document.createElement("link");
@@ -32,26 +72,45 @@ export const applyBranding = (branding) => {
       document.head.appendChild(link);
     }
   }
+  // Apply layout orientation as CSS class on body
+  if (branding.layoutOrientation) {
+    document.body.classList.remove("layout-vertical", "layout-horizontal");
+    document.body.classList.add(`layout-${branding.layoutOrientation}`);
+  }
 };
 
 export const BrandingProvider = ({ children }) => {
+  const [branding, setBranding] = useState(DEFAULT_BRANDING);
+
   useEffect(() => {
-    // Load branding from API and apply CSS vars
+    // Apply default layout class immediately
+    document.body.classList.add("layout-vertical");
+    
     axios.get(API_ENDPOINTS.GET_BRANDING())
-      .then((r) => applyBranding(r.data))
+      .then((r) => {
+        const data = { ...DEFAULT_BRANDING, ...r.data };
+        setBranding(data);
+        applyBrandingCSS(data);
+      })
       .catch(() => {});
 
-    // Listen for live updates from the admin iframe parent
+    // Listen for live updates posted from admin branding tab
     const handler = (e) => {
       if (e.data?.type === "BRANDING_UPDATE") {
-        applyBranding(e.data.branding);
+        const data = { ...DEFAULT_BRANDING, ...e.data.branding };
+        setBranding(data);
+        applyBrandingCSS(data);
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, []);
 
-  return <BrandingContext.Provider value={null}>{children}</BrandingContext.Provider>;
+  return (
+    <BrandingContext.Provider value={branding}>
+      {children}
+    </BrandingContext.Provider>
+  );
 };
 
 export const useBranding = () => useContext(BrandingContext);

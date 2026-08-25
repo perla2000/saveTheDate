@@ -10,9 +10,13 @@ import Guest from "./RSVP/Guest";
 import SaveTheDate from "./SaveTheDate/SaveTheDate";
 import WeddingCountdown from "./WeddingCountdown/WeddingCountdown";
 import SharedBackground from "./components/SharedBackground";
+import HorizontalNav from "./components/HorizontalNav";
 import { ClientProvider } from "./context/ClientContext";
 import { BrandingProvider } from "./context/BrandingContext";
+import { useBranding } from "./context/BrandingContext";
 import { ImageLoadingProvider, useImageLoading } from "./hooks/useImageLoading";
+import { useHorizontalSwipe } from "./hooks/useHorizontalSwipe";
+import "./styles/layout.css";
 
 // These images must be decoded before the card can open
 const CRITICAL_IMAGES = ["/yarze.png", "/invitation.png", "/canva.png"];
@@ -78,6 +82,11 @@ function AppContent() {
   const [userTapped, setUserTapped] = useState(false);
   const [guestDataLoaded, setGuestDataLoaded] = useState(false);
   const { allImagesLoaded } = useImageLoading();
+  const branding = useBranding();
+  
+  // Enable swipe navigation when horizontal layout is active
+  const isHorizontal = branding?.layoutOrientation === "horizontal";
+  useHorizontalSwipe(isHorizontal);
 
   useEffect(() => {
     const setViewportHeight = () => {
@@ -116,6 +125,22 @@ function AppContent() {
   const isAdmin   = location.pathname.startsWith("/admin");
   const isPreview = new URLSearchParams(location.search).get("preview") === "true";
 
+  // Show content immediately when user tapped
+  const loadingEnabled = branding?.showLoadingScreen !== false;
+  const showContent = userTapped || !loadingEnabled;
+  const showLoading = !userTapped && loadingEnabled;
+
+  // Handle tap to open - immediate response
+  const handleLoadingComplete = () => {
+    setUserTapped(true);
+    setShouldPlayMusic(true); // Start music immediately on tap
+  };
+
+  // When loading screen is disabled, start music automatically
+  useEffect(() => {
+    if (!loadingEnabled) setShouldPlayMusic(true);
+  }, [loadingEnabled]);
+
   // On the admin route skip loading screen and music entirely
   if (isAdmin) {
     return (
@@ -135,16 +160,6 @@ function AppContent() {
       </div>
     );
   }
-
-  // Show content immediately when user tapped
-  const showContent = userTapped;
-  const showLoading = !userTapped;
-
-  // Handle tap to open - immediate response
-  const handleLoadingComplete = () => {
-    setUserTapped(true);
-    setShouldPlayMusic(true); // Start music immediately on tap
-  };
 
   if (showLoading) {
     return (
@@ -189,6 +204,7 @@ function AppContent() {
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
+      <HorizontalNav />
     </>
   );
 }

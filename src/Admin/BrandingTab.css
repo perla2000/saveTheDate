@@ -52,6 +52,7 @@
   border: 2px solid #e8e0e0; border-radius: 10px; padding: 0.6rem 0.75rem;
   background: #fff; cursor: pointer; transition: border-color 0.15s, transform 0.1s;
   display: flex; flex-direction: column; align-items: center; gap: 0.3rem; min-width: 80px;
+  position: relative;
 }
 .brand-palette-card:hover { border-color: #800020; transform: translateY(-1px); }
 .brand-palette-card.active { border-color: #800020; box-shadow: 0 0 0 3px rgba(128,0,32,0.15); }
@@ -59,6 +60,21 @@
 .brand-palette-swatches span { width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
 .brand-palette-name { font-size: 0.75rem; color: #5a4a4a; font-weight: 500; }
 .brand-palette-custom { border-style: dashed; }
+.brand-palette-remove {
+  position: absolute; top: 4px; right: 4px;
+  background: rgba(200,0,0,0.9); color: #fff;
+  border: none; border-radius: 3px;
+  width: 18px; height: 18px; font-size: 11px; line-height: 1;
+  cursor: pointer; opacity: 0; transition: opacity 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.brand-palette-card:hover .brand-palette-remove { opacity: 1; }
+.brand-palette-remove:hover { background: rgba(200,0,0,1); }
+
+.brand-palette-form {
+  background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;
+  padding: 1.5rem; margin-top: 1.5rem;
+}
 
 .brand-custom-colors { display: flex; flex-direction: column; gap: 0.85rem; }
 .brand-color-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
@@ -163,3 +179,199 @@
   .brand-section-nav { flex-direction: row; position: static; }
   .brand-section-btn { flex: 1; text-align: center; }
 }
+
+/* ── Settings section ────────────────────────────────────────────────── */
+.brand-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: #fafafa;
+  border: 1px solid #ede8ea;
+  border-radius: 10px;
+  margin-top: 0.75rem;
+}
+.brand-setting-info { flex: 1; }
+.brand-setting-label { font-size: 0.9rem; font-weight: 600; color: #3a2a2f; margin-bottom: 0.25rem; }
+.brand-setting-desc  { font-size: 0.78rem; color: #8a7880; line-height: 1.4; }
+
+/* Toggle switch */
+.brand-toggle { position: relative; display: inline-flex; align-items: center; cursor: pointer; flex-shrink: 0; }
+.brand-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.brand-toggle-slider {
+  width: 44px; height: 24px;
+  background: #d8cdd0;
+  border-radius: 24px;
+  transition: background 0.2s;
+  position: relative;
+}
+.brand-toggle-slider::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.brand-toggle input:checked + .brand-toggle-slider { background: #800020; }
+.brand-toggle input:checked + .brand-toggle-slider::after { transform: translateX(20px); }
+
+/* Orientation buttons */
+.brand-orientation-btns {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.brand-orientation-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 1rem;
+  background: #fff;
+  border: 1.5px solid #d8cdd0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6a5a5f;
+  min-width: 80px;
+}
+.brand-orientation-btn:hover { border-color: #b8a8b0; background: #fafafa; }
+.brand-orientation-btn.active {
+  border-color: #800020;
+  background: #800020;
+  color: #fff;
+}
+.brand-orientation-btn svg { flex-shrink: 0; }
+
+/* Text customization fields */
+.brand-text-group {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #ede8ea;
+}
+
+.brand-text-group-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #3a2a2f;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0d5d8;
+}
+
+.brand-text-field {
+  margin-bottom: 1rem;
+}
+
+.brand-text-field:last-child {
+  margin-bottom: 0;
+}
+
+.brand-text-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #5a4a4f;
+  margin-bottom: 0.4rem;
+}
+
+.brand-text-field input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
+  border: 1px solid #d8cdd0;
+  border-radius: 6px;
+  background: #fff;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.brand-text-field input:focus {
+  outline: none;
+  border-color: #800020;
+  box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.1);
+}
+
+.brand-text-field input::placeholder {
+  color: #b8a8b0;
+  font-size: 0.85rem;
+}
+
+/* ── Sections tab ─────────────────────────────────────────────────────── */
+.brand-sections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.brand-section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: 1.5px solid #e8e0e0;
+  border-radius: 8px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.brand-section-row:hover { border-color: #c9a0a0; }
+
+.brand-section-row--disabled {
+  opacity: 0.5;
+  background: #faf7f7;
+}
+
+.brand-section-row-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-section-row-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3a2a2a;
+}
+
+.brand-section-row-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.brand-sort-btn {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid #e0d0d0;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #5a4a4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.brand-sort-btn:hover:not(:disabled) {
+  background: #800020;
+  border-color: #800020;
+  color: #fff;
+}
+
+.brand-sort-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.brand-toggle-sm { transform: scale(0.85); transform-origin: left center; }

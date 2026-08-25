@@ -1,10 +1,14 @@
 import { useMemo, useRef, useState } from "react";
 import BackgroundImageLoader from "../components/BackgroundImageLoader";
 import TrackedImage from "../components/TrackedImage";
+import { useClient } from "../context/ClientContext";
+import { useBranding } from "../context/BrandingContext";
 import "./Gift.css";
 
 const Gift = () => {
   const containerRef = useRef(null);
+  const { clientConfig } = useClient();
+  const branding = useBranding();
   const [copySuccess, setCopySuccess] = useState({
     account: false,
     phone: false,
@@ -17,7 +21,8 @@ const Gift = () => {
   // Copy functions with success alerts
   const handleCopyAccount = async () => {
     try {
-      await navigator.clipboard.writeText("30935570-03");
+      const accountId = branding?.giftAccountId || clientConfig?.giftAccountId || "30935570-03";
+      await navigator.clipboard.writeText(accountId);
       setCopyMessage("Account ID copied!");
       setCopySuccess((prev) => ({ ...prev, account: true }));
       setTimeout(() => {
@@ -31,7 +36,8 @@ const Gift = () => {
 
   const handleCopyPhone = async () => {
     try {
-      await navigator.clipboard.writeText("+961 76 788 968");
+      const phoneNumber = branding?.giftPhoneNumber || clientConfig?.giftPhoneNumber || "+961 76 788 968";
+      await navigator.clipboard.writeText(phoneNumber);
       setCopyMessage("Phone Number copied!");
       setCopySuccess((prev) => ({ ...prev, phone: true }));
       setTimeout(() => {
@@ -57,10 +63,10 @@ const Gift = () => {
         <div className="gift-message">
           <p className="gift-text">
             If you feel inclined to offer something further, a gift may be made
-            through WhishMoney using the details below. Please know that your
+            through {branding?.giftProviderName || clientConfig?.giftProviderName || "WhishMoney"} using the details below. Please know that your
             love and support are more than enough.
           </p>
-          <p className="gift-names">Justin & Yara</p>
+          <p className="gift-names">{branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}</p>
           <div className="gift-signature"></div>
           <div className="gift-info-card">
             <div className="gift-logo">
@@ -75,7 +81,7 @@ const Gift = () => {
             <div className="account-info">
               <p>
                 <strong>Account ID:</strong>
-                <span className="account-value">30935570-03</span>
+                <span className="account-value">{branding?.giftAccountId || clientConfig?.giftAccountId || "30935570-03"}</span>
                 <button
                   className="copy-btn"
                   onClick={handleCopyAccount}
@@ -102,7 +108,7 @@ const Gift = () => {
             <div className="account-info">
               <p>
                 <strong>Number:</strong>
-                <span className="account-value">+961 76 788 968</span>
+                <span className="account-value">{branding?.giftPhoneNumber || clientConfig?.giftPhoneNumber || "+961 76 788 968"}</span>
                 <button
                   className="copy-btn"
                   onClick={handleCopyPhone}

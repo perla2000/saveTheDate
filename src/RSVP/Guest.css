@@ -15,7 +15,7 @@
   max-width: 1200px;
   background: transparent;
   padding: 3rem 1.5rem;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -30,7 +30,7 @@
   font-weight: 400;
   letter-spacing: 4px;
   line-height: 1.1;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
 
@@ -426,7 +426,7 @@
   min-width: 60px;
   text-align: center;
   transition: all 0.3s ease;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -552,7 +552,7 @@
   text-align: center;
   line-height: 1.5;
   margin: 0;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-weight: 400;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
@@ -711,7 +711,7 @@
   color: #7a2e3a;
   font-size: 1.1rem;
   font-weight: 500;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   transition: all 0.3s ease;
   outline: none;
   box-sizing: border-box;
@@ -762,7 +762,7 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
   display: block;
@@ -840,7 +840,7 @@
   font-weight: 600;
   color: #ffffff;
   margin-bottom: 0.5rem;
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-size: 0.9rem;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }

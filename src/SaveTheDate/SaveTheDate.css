@@ -38,6 +38,22 @@
   backface-visibility: hidden;
 }
 
+/* Single photo mode (no scrolling) */
+.std-single-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.std-featured-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 /* @keyframes autoScroll {
   from {
     transform: translateY(0);
@@ -79,7 +95,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(90, 20, 45, 0.5), rgba(90, 20, 45, 0.5));
+  background-color: var(--brand-accent, #5a142d);
+  opacity: 0.5;
 }
 .std-overlay > * {
   position: relative; /* keep text above tint */
@@ -101,7 +118,7 @@
 }
 .std-title {
   margin-top: 6px;
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   letter-spacing: 2px;
   font-weight: 600;
   font-size: 1.1rem;
@@ -131,7 +148,7 @@
   border: 1px solid #fff;
   display: grid;
   place-items: center;
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 1rem;
 }
 .std-since {
@@ -140,6 +157,33 @@
     "Lucida Handwriting", cursive;
   font-size: 0.95rem;
   opacity: 0.9;
+}
+
+.std-date-display {
+  margin-top: 2rem;
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.std-date-text {
+  font-family: var(--brand-font, "Georgia", serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.std-venue-text {
+  font-family: var(--brand-font, "Georgia", serif);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .std-bottom {
@@ -156,7 +200,7 @@
   font-size: 1.3rem;
 } */
 .std-save {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   letter-spacing: 2px;
   font-weight: 400;
   font-size: 1rem;
@@ -172,7 +216,7 @@
 }
 
 .std-date-save {
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 0.55rem;
   opacity: 0.95;
   margin-top: -5px;
@@ -251,7 +295,8 @@
 .loading-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(90, 20, 45, 0.8);
+  background-color: var(--brand-accent, #5a142d);
+  opacity: 0.8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -260,7 +305,7 @@
 
 .loading-spinner {
   color: white;
-  font-family: "Georgia", serif;
+  font-family: var(--brand-font, "Georgia", serif);
   font-size: 0.95rem;
   letter-spacing: 2px;
 }
@@ -277,7 +322,7 @@
 }
 
 .scroll-text {
-  font-family: "Playfair Display", serif;
+  font-family: var(--brand-font, "Playfair Display", serif);
   font-size: 1.2rem;
   font-weight: 500;
   color: #ffffff;

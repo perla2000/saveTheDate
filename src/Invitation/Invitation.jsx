@@ -1,49 +1,69 @@
 import { useMemo, useState } from "react";
 import BackgroundImageLoader from "../components/BackgroundImageLoader";
 import TrackedImage from "../components/TrackedImage";
+import { useBranding } from "../context/BrandingContext";
+import { useClient } from "../context/ClientContext";
 import "./Invitation.css";
 
 export default function Invitation() {
-  const [flipped, setFlipped] = useState(false);
+  const [flipped, setFlipped]   = useState(false);
+  const branding                = useBranding();
+  const { clientConfig }        = useClient();
 
-  // Memoize the images array to prevent re-renders
-  const backgroundImages = useMemo(() => ["/invitation.png", "/canva.png"], []);
+  const couplePhoto = branding?.couplePhotos?.[0] || null;
+  const venuePhoto  = branding?.venuePhotos?.[0]  || null;
 
-  const handleCardClick = () => {
-    setFlipped(!flipped);
-  };
+  // Only preload static assets — branding images are already in memory (base64)
+  const backgroundImages = useMemo(() => {
+    const imgs = [];
+    if (!couplePhoto) imgs.push("/invitation.png");
+    if (!venuePhoto)  imgs.push("/canva.png");
+    return imgs;
+  }, [couplePhoto, venuePhoto]);
 
-  // Dynamic inline style for the background image
-  const saveTheDateStyle = {
-    backgroundImage: `linear-gradient(rgba(90, 20, 45, 0.5), rgba(90, 20, 45, 0.5)), url(/canva.png)`,
-  };
+  const mainBgStyle = venuePhoto
+    ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url(${venuePhoto})` }
+    : couplePhoto
+      ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url(${couplePhoto})` }
+      : { background: "#111" };
+
+  const frontStyle = couplePhoto
+    ? { backgroundImage: `url(${couplePhoto})`, backgroundSize: "cover", backgroundPosition: "center" }
+    : { backgroundImage: "url(/invitation.png)", backgroundSize: "cover", backgroundPosition: "center" };
+
+  const backBgStyle = venuePhoto
+    ? { backgroundImage: `linear-gradient(rgba(90,20,45,0.5), rgba(90,20,45,0.5)), url(${venuePhoto})` }
+    : { backgroundImage: `linear-gradient(rgba(90,20,45,0.5), rgba(90,20,45,0.5)), url(/canva.png)` };
 
   return (
-    <div className="invMain full-screen-section">
-      <BackgroundImageLoader images={backgroundImages} component="invitation" />
-      {/* <div className="invEyebrow">WITH JOYOUS HEARTS</div> */}
+    <div className="invMain full-screen-section" style={mainBgStyle}>
+      {backgroundImages.length > 0 && (
+        <BackgroundImageLoader images={backgroundImages} component="invitation" />
+      )}
       <section className="invPage" aria-label="Invitation">
         <div
           className={`invCard ${flipped ? "flipped" : ""}`}
-          onClick={handleCardClick}>
-          {/* Front Side - Photos */}
-          <div className="invSide invFront">
+          onClick={() => setFlipped((f) => !f)}>
+
+          {/* Front Side */}
+          <div className="invSide invFront" style={frontStyle}>
             <div className="invHeader">
-              {/* <div className="invEyebrow">WITH JOYOUS HEARTS</div> */}
-              <div className="std-logo">
-                <TrackedImage
-                  className="std-logo-img"
-                  src="/whitelogo.png"
-                  alt="logo"
-                  component="invitation"
-                />
-              </div>
+              {branding?.logo && (
+                <div className="std-logo">
+                  <img
+                    className="std-logo-img"
+                    src={branding.logo}
+                    alt="Wedding Logo"
+                  />
+                </div>
+              )}
               <div className="mini-flip-text">Tap to Flip</div>
             </div>
           </div>
 
+          {/* Back Side */}
           <div className="invSide invBack">
-            <div className="saveTheDateWrapper" style={saveTheDateStyle}>
+            <div className="saveTheDateWrapper" style={backBgStyle}>
               <div className="formal-invitation">
                 <div className="invitation-top">
                   <div className="joyous-hearts">WITH JOYOUS HEARTS</div>
@@ -51,19 +71,10 @@ export default function Invitation() {
 
                 <div className="invitation-parents">
                   <div className="parent-section">
-                    <div className="parent-line">
-                      <span className="parent-name">General Walid</span>
-                    </div>
-                    <span className="parent-name">&</span>
-                    <div className="parent-name">Georgina Jeitany</div>
+                    <div className="parent-name">{branding?.groomParents || clientConfig?.groomParents || "Mr. & Mrs. [Groom Parents]"}</div>
                   </div>
-
                   <div className="parent-section">
-                    <div className="parent-line">
-                      <span className="parent-name">Admiral Assaad</span>
-                    </div>
-                    <span className="parent-name">&</span>
-                    <div className="parent-name">Daad Abdallah</div>
+                    <div className="parent-name">{branding?.brideParents || clientConfig?.brideParents || "Mr. & Mrs. [Bride Parents]"}</div>
                   </div>
                 </div>
 
@@ -75,13 +86,21 @@ export default function Invitation() {
                   SON & DAUGHTER
                 </div>
 
-                <div className="couple-names">Justin & Yara</div>
+                <div className="couple-names">{branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}</div>
 
                 <div className="wedding-details">
-                  <div className="wedding-day">SATURDAY</div>
-                  <div className="wedding-date">25 | JULY | 2026</div>
-                  <div className="wedding-time">AT 7:00 PM</div>
-                  <div className="wedding-venue">YARZEH OFFICERS CLUB</div>
+                  <div className="wedding-day">
+                    {(branding?.weddingDate || clientConfig?.weddingDate)
+                      ? new Date(branding?.weddingDate || clientConfig?.weddingDate).toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
+                      : "SATURDAY"}
+                  </div>
+                  <div className="wedding-date">
+                    {(branding?.weddingDate || clientConfig?.weddingDate)
+                      ? new Date(branding?.weddingDate || clientConfig?.weddingDate).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" }).toUpperCase().replace(/ /g, " | ")
+                      : "25 | JULY | 2026"}
+                  </div>
+                  <div className="wedding-time">AT {branding?.weddingTime || clientConfig?.weddingTime || "7:00 PM"}</div>
+                  <div className="wedding-venue">{(branding?.venue || clientConfig?.venue || "YARZEH OFFICERS CLUB").toUpperCase()}</div>
                 </div>
               </div>
             </div>

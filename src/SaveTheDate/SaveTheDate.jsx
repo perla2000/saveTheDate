@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import LazyImage from "../components/LazyImage";
+import { useBranding } from "../context/BrandingContext";
+import { useClient } from "../context/ClientContext";
 import { useImageLoading } from "../hooks/useImageLoading";
 import "../styles/imageLoading.css";
 import { useImagePreloader } from "../utils/imagePreloader";
@@ -12,37 +14,49 @@ export default function SaveTheDate() {
   const [isSwipeClicked, setIsSwipeClicked] = useState(false);
   const { setComponentLoadingRule } = useImageLoading();
   const { preloadCritical } = useImagePreloader();
+  const branding = useBranding();
+  const { clientConfig } = useClient();
+  
+  // Auto-scroll setting from branding
+  const autoScrollEnabled = branding?.autoScrollEnabled !== false;
 
   const handleSwipeClick = () => {
     setIsSwipeClicked(true);
-
-    const nextSection = document.querySelector(".next-section");
-    if (nextSection) {
-      nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    
+    if (branding?.layoutOrientation === "horizontal") {
+      // Horizontal: scroll to next page (right)
+      const viewportWidth = window.innerWidth;
+      const currentScrollLeft = window.scrollX || document.documentElement.scrollLeft;
+      const nextPageLeft = Math.ceil(currentScrollLeft / viewportWidth) * viewportWidth + viewportWidth;
+      window.scrollTo({ left: nextPageLeft, behavior: "smooth" });
     } else {
-      window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+      // Vertical: scroll down to next section
+      const nextSection = document.querySelector(".next-section");
+      if (nextSection) {
+        nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+      }
     }
-
+    
     setTimeout(() => setIsSwipeClicked(false), 600);
   };
 
-  function importAll(r) {
-    return r.keys().map(r);
-  }
+  // Use flip photos from branding if uploaded, else fall back to local /photos/
+  const brandingFlipPhotos = branding?.flipPhotos || [];
+  const hasBrandingPhotos  = brandingFlipPhotos.length > 0;
 
-  const photos = useMemo(() => {
+  const localPhotos = useMemo(() => {
+    if (hasBrandingPhotos) return [];
     try {
-      const photoContext = require.context(
-        "../../public/photos",
-        false,
-        /\.(png|jpe?g)$/,
-      );
-      return importAll(photoContext);
-    } catch (error) {
-      console.error("Error loading photos:", error);
-      return ["/photos/photo1.jpeg"];
+      const ctx = require.context("../../public/photos", false, /\.(png|jpe?g)$/);
+      return ctx.keys().map(ctx);
+    } catch {
+      return [];
     }
-  }, []);
+  }, [hasBrandingPhotos]);
+
+  const photos = hasBrandingPhotos ? brandingFlipPhotos : localPhotos;
 
   // No need to double - we'll use math for circular scrolling
   // const doubled = useMemo(() => [...photos, ...photos], [photos]);
@@ -66,6 +80,9 @@ export default function SaveTheDate() {
   }, [setComponentLoadingRule]);
 
   useEffect(() => {
+    // Skip auto-scroll animation if disabled
+    if (!autoScrollEnabled) return;
+    
     const container = scrollRef.current;
     const content = contentRef.current;
     if (!container || !content) return;
@@ -141,71 +158,99 @@ export default function SaveTheDate() {
       content.style.transform = "";
       content.style.webkitTransform = "";
     };
-  }, [photos.length]); // important: rerun if photos list changes
+  }, [photos.length, autoScrollEnabled]); // important: rerun if photos list changes or autoScroll changes
 
   return (
-    <div className="std-page full-screen-section">
+    <div className="std-page full-screen-section" style={photos.length === 0 ? { background: "#111" } : {}}>
       <div className="std-bg" ref={scrollRef}>
-        <div className="std-grid" ref={contentRef}>
-          {/* Show loading spinner while critical images load */}
-          {!allLoaded && (
-            <div className="loading-overlay">
-              <div className="loading-spinner">Loading...</div>
-            </div>
-          )}
-
-          {/* Render photos twice for seamless circular effect */}
-          {[...photos, ...photos].map((src, i) => (
-            <LazyImage
-              key={i}
-              className="std-img std-photo progressive-image optimized-image"
-              src={src}
-              alt=""
-              eager={i < 20} // Only first 12 images eager (reduced from 35)
-              threshold={0.1} // Increased threshold - load later (was 0.1)
-              rootMargin="50px" // Reduced margin - load closer to viewport (was 300px)
-              component="saveTheDate"
-              loading={i < 20 ? "eager" : "lazy"}
-              decoding="async"
-              fetchPriority={i < 6 ? "high" : "low"} // High priority for first 6 images
-              onLoad={() => setLoadedCount((c) => c + 1)}
-              onError={() => setLoadedCount((c) => c + 1)}
-            />
-          ))}
-        </div>
+        {autoScrollEnabled ? (
+          // Scrolling grid mode
+          <div className="std-grid" ref={contentRef}>
+            {photos.length === 0 && (
+              <div style={{ width: "100%", height: "100vh", background: "#111" }} />
+            )}
+            {/* Render photos twice for seamless circular effect */}
+            {[...photos, ...photos].map((src, i) => (
+              <LazyImage
+                key={i}
+                className="std-img std-photo progressive-image optimized-image"
+                src={src}
+                alt=""
+                eager={i < 20}
+                threshold={0.1}
+                rootMargin="50px"
+                component="saveTheDate"
+                loading={i < 20 ? "eager" : "lazy"}
+                decoding="async"
+                fetchPriority={i < 6 ? "high" : "low"}
+                onLoad={() => setLoadedCount((c) => c + 1)}
+                onError={() => setLoadedCount((c) => c + 1)}
+              />
+            ))}
+          </div>
+        ) : (
+          // Single image mode
+          <div className="std-single-photo" ref={contentRef}>
+            {photos.length > 0 ? (
+              <img
+                className="std-featured-img"
+                src={photos[0]}
+                alt="Featured"
+                onLoad={() => setLoadedCount((c) => c + 1)}
+                onError={() => setLoadedCount((c) => c + 1)}
+              />
+            ) : (
+              <div style={{ width: "100%", height: "100vh", background: "#111" }} />
+            )}
+          </div>
+        )}
       </div>
 
       <div className="std-overlay">
         <div className="std-center">
-          <div className="std-title">A DECADE OF LOVE,</div>
-          <div className="std-names">Justin &amp; Yara</div>
-          <div className="std-title">A LIFETIME TO GO!</div>
+          <div className="std-title">{branding?.saveTheDateSubtitle || clientConfig?.saveTheDateSubtitle || "A DECADE OF LOVE,"}</div>
+          <div className="std-names">{branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}</div>
+          <div className="std-title">{branding?.saveTheDateTitle || clientConfig?.saveTheDateTitle || "A LIFETIME TO GO!"}</div>
 
-          {/* <div className="std-logo">
-            <LazyImage
-              className="std-logo-img critical-image"
-              src="/whitelogo.png"
-              alt="logo"
-              component="saveTheDate"
-              eager={true}
-            />
-          </div> */}
+          {branding?.logo && (
+            <div className="std-logo">
+              <img
+                className="std-logo-img critical-image"
+                src={branding.logo}
+                alt="Wedding Logo"
+              />
+            </div>
+          )}
         </div>
 
         <div className="swipe-down-indicator">
-          <div className="scroll-text">Scroll Down</div>
+          <div className="scroll-text">
+            {branding?.layoutOrientation === "horizontal" ? "Swipe" : "Scroll Down"}
+          </div>
           <div
             className={`swipe-arrow ${isSwipeClicked ? "swipe-clicked" : ""}`}
             onClick={handleSwipeClick}
-            title="Swipe down to continue">
+            title="Scroll down to continue">
             <svg width="50" height="50" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M7 13l5 5 5-5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              {branding?.layoutOrientation === "horizontal" ? (
+                // Right arrow for horizontal/swipe
+                <path
+                  d="M9 5l7 7-7 7"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ) : (
+                // Down arrow for vertical/scroll
+                <path
+                  d="M7 13l5 5 5-5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              )}
             </svg>
           </div>
         </div>
