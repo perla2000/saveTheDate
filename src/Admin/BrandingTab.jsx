@@ -195,7 +195,7 @@ export default function BrandingTab({ clientConfig }) {
     { id: "lovestory",  label: "Love Story",                enabled: true, order: 6 },
   ];
 
-  const [branding, setBranding] = useState({ accentColor: "#800020", backgroundColor: "#f7f1f1", textColor: "#4a3a3f", fontFamily: "Playfair Display", couplePhotos: [], venuePhotos: [], flipPhotos: [], logo: "", showLoadingScreen: true, layoutOrientation: "vertical", autoScrollEnabled: true, coupleName: "", groomName: "", brideName: "", groomParents: "", brideParents: "", weddingDate: "", weddingTime: "", venue: "", venueAddress: "", giftAccountId: "", giftPhoneNumber: "", giftProviderName: "", saveTheDateSubtitle: "", saveTheDateTitle: "", venueMapUrl: "", venueMapEmbedUrl: "", customPalettes: [], sections: DEFAULT_SECTIONS });
+  const [branding, setBranding] = useState({ accentColor: "#800020", backgroundColor: "#f7f1f1", textColor: "#4a3a3f", fontFamily: "Playfair Display", couplePhotos: [], venuePhotos: [], flipPhotos: [], logo: "", showLoadingScreen: true, layoutOrientation: "vertical", autoScrollEnabled: true, coupleName: "", groomName: "", brideName: "", groomParents: "", brideParents: "", weddingDate: "", weddingTime: "", venue: "", venueAddress: "", giftAccountId: "", giftPhoneNumber: "", giftProviderName: "", giftSubtitle: "", giftDescription: "", inviteMessageTemplate: "", saveTheDateSubtitle: "", saveTheDateTitle: "", venueMapUrl: "", venueMapEmbedUrl: "", customPalettes: [], sections: DEFAULT_SECTIONS });
   const [loading,    setLoading]    = useState(true);
   const [saving,     setSaving]     = useState(false);
   const [saved,      setSaved]      = useState(false);
@@ -640,6 +640,30 @@ export default function BrandingTab({ clientConfig }) {
                 <div className="brand-text-field">
                   <label>Phone Number</label>
                   <input type="text" value={branding.giftPhoneNumber || ""} onChange={(e) => update({ giftPhoneNumber: e.target.value })} placeholder="Leave blank for default" />
+                </div>
+                <div className="brand-text-field">
+                  <label>Gift Page Subtitle</label>
+                  <input type="text" value={branding.giftSubtitle || ""} onChange={(e) => update({ giftSubtitle: e.target.value })} placeholder="Your presence at our wedding is truly the only gift we wish for." />
+                </div>
+                <div className="brand-text-field">
+                  <label>Gift Page Description</label>
+                  <textarea rows={3} value={branding.giftDescription || ""} onChange={(e) => update({ giftDescription: e.target.value })} placeholder="If you feel inclined to offer something further, a gift may be made through {providerName} using the details below..." style={{ width: "100%", padding: "0.5rem", border: "1px solid #ddd", borderRadius: "6px", resize: "vertical", fontFamily: "inherit", fontSize: "0.875rem" }} />
+                </div>
+              </div>
+
+              <div className="brand-text-group">
+                <h4 className="brand-text-group-title">WhatsApp Invite Message</h4>
+                <p style={{ fontSize: "0.8rem", color: "#888", marginBottom: "0.75rem" }}>
+                  Placeholders: <code style={{ background: "#f0f0f0", padding: "1px 5px", borderRadius: "3px" }}>{"{coupleName}"}</code> <code style={{ background: "#f0f0f0", padding: "1px 5px", borderRadius: "3px" }}>{"{weddingDate}"}</code> <code style={{ background: "#f0f0f0", padding: "1px 5px", borderRadius: "3px" }}>{"{confirmDate}"}</code> <code style={{ background: "#f0f0f0", padding: "1px 5px", borderRadius: "3px" }}>{"{rsvpUrl}"}</code> <code style={{ background: "#f0f0f0", padding: "1px 5px", borderRadius: "3px" }}>{"{familyId}"}</code>
+                </p>
+                <div className="brand-text-field">
+                  <textarea
+                    rows={8}
+                    value={branding.inviteMessageTemplate || ""}
+                    onChange={(e) => update({ inviteMessageTemplate: e.target.value })}
+                    placeholder={`We're so happy to share this special moment with you 🤍\n\nOur big day is on {weddingDate}, and it would truly mean the world to us to have you there.\n\nPlease find our invitation card at the link below for all the details.\nWe really hope you can join us on this unforgettable day!\n\n{rsvpUrl}/?familyId={familyId}\n\nPlease confirm before {confirmDate} 🤍`}
+                    style={{ width: "100%", padding: "0.5rem", border: "1px solid #ddd", borderRadius: "6px", resize: "vertical", fontFamily: "inherit", fontSize: "0.875rem" }}
+                  />
                 </div>
               </div>
 

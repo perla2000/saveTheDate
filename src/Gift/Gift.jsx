@@ -55,16 +55,18 @@ const Gift = () => {
       <div className="gift-header">
         <h1 className="gift-title">Gift Registry</h1>
         <p className="gift-subtitle">
-          Your presence at our wedding is truly the only gift we wish for.
+          {branding?.giftSubtitle || "Your presence at our wedding is truly the only gift we wish for."}
         </p>
       </div>
 
       <div className="gift-content">
         <div className="gift-message">
           <p className="gift-text">
-            If you feel inclined to offer something further, a gift may be made
-            through {branding?.giftProviderName || clientConfig?.giftProviderName || "WhishMoney"} using the details below. Please know that your
-            love and support are more than enough.
+            {branding?.giftDescription ||
+              <>If you feel inclined to offer something further, a gift may be made
+              through {branding?.giftProviderName || clientConfig?.giftProviderName || "WhishMoney"} using the details below. Please know that your
+              love and support are more than enough.</>
+            }
           </p>
           <p className="gift-names">{branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}</p>
           <div className="gift-signature"></div>

@@ -5,10 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { API_ENDPOINTS } from "../config/api";
 import API_BASE_URL from "../config/api";
+import { useBranding } from "../context/BrandingContext";
 import BrandingTab from "./BrandingTab";
 
 const AdminDashboard = ({ onLogout, clientConfig }) => {
   const [activeTab, setActiveTab] = useState("rsvp");
+  const branding = useBranding();
 
   // ── Import tab state ──────────────────────────────────────────────────────
   const [file, setFile] = useState(null);
@@ -632,7 +634,7 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
       fetchSection("cyprus"); // needed to compute vendor totals
       fetchSection("lebanon");
     }
-  }, [activeTab]);
+  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchFamilies = async () => {
     setRsvpLoading(true);
@@ -729,10 +731,38 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
   };
 
   // ── Invite helper ─────────────────────────────────────────────────────────
-  const buildInviteMessage = (familyId) =>
-    `We're so happy to share this special moment with you 🤍\n\nOur big day is on July 25 2026, and it would truly mean the world to us to have you there. \n\nPlease find our invitation card at the link below for all the details.\nWe really hope you can join us on this unforgettable day!\n\n${clientConfig?.rsvpUrl || "https://sparklink.cards"}/?familyId=${familyId}\n\nPlease confirm before July 1st  🤍`;
+  const buildInviteMessage = (familyId) => {
+    // Calculate dates
+    const rawDate  = branding?.weddingDate || clientConfig?.weddingDate || "";
+    const rsvpUrl  = clientConfig?.rsvpUrl || "https://sparklink.cards";
 
-  const openWhatsApp = (familyId) => {
+    let weddingDateStr = "our wedding day";
+    let confirmDateStr = "one month before";
+    if (rawDate) {
+      const d = new Date(rawDate);
+      weddingDateStr = d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+      const confirm = new Date(d);
+      confirm.setMonth(confirm.getMonth() - 1);
+      confirmDateStr = confirm.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    const coupleName = branding?.coupleName || clientConfig?.coupleName || "Justin & Yara";
+    const link = `${rsvpUrl}/?familyId=${familyId}`;
+
+    // Use custom template if set, otherwise use default
+    const template = branding?.inviteMessageTemplate ||
+      `We're so happy to share this special moment with you 🤍\n\nOur big day is on {weddingDate}, and it would truly mean the world to us to have you there. \n\nPlease find our invitation card at the link below for all the details.\nWe really hope you can join us on this unforgettable day!\n\n{rsvpUrl}/?familyId={familyId}\n\nPlease confirm before {confirmDate}  🤍`;
+
+    return template
+      .replace(/{coupleName}/g, coupleName)
+      .replace(/{weddingDate}/g, weddingDateStr)
+      .replace(/{confirmDate}/g, confirmDateStr)
+      .replace(/{rsvpUrl}/g, rsvpUrl)
+      .replace(/{familyId}/g, familyId)
+      .replace(/{link}/g, link);
+  };
+
+  const openWhatsApp = (familyId) => { // eslint-disable-line no-unused-vars
     const msg = buildInviteMessage(familyId);
     window.open(
       `https://wa.me/?text=${encodeURIComponent(msg)}`,

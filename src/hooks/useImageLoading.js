@@ -148,7 +148,7 @@ export function ImageLoadingProvider({ children }) {
     }
 
     // Check each component
-    for (const [, data] of componentRules.entries()) {
+    for (const [, data] of componentRules.entries()) { // eslint-disable-line no-unused-vars
       const { loadedCount, maxRequired, images } = data;
 
       if (maxRequired !== null) {

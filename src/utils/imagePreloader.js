@@ -56,6 +56,7 @@ class ImagePreloader {
     let loaded = 0;
     const results = [];
     
+    // eslint-disable-next-line no-loop-func
     const loadWithProgress = async (src) => {
       try {
         const result = await this.preloadImage(src, priority);

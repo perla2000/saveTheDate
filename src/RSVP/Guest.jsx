@@ -204,7 +204,7 @@ const Guest = ({ familyId, onDataLoaded, onGiftRegistryLoaded }) => {
       }
     };
     fetchData();
-  }, [familyId, onDataLoaded]);
+  }, [familyId, onDataLoaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const currentGuests = familyNotFound ? newGuests : guests;
 

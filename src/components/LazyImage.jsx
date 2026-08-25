@@ -85,9 +85,10 @@ const LazyImage = ({
       observerRef.current.observe(imgRef.current);
     }
 
+    const imgEl = imgRef.current;
     return () => {
-      if (observerRef.current && imgRef.current) {
-        observerRef.current.unobserve(imgRef.current);
+      if (observerRef.current && imgEl) {
+        observerRef.current.unobserve(imgEl);
       }
     };
   }, [src, eager, isInView, threshold, rootMargin, isFromCache, trackLoad]);
