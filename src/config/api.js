@@ -2,7 +2,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:800
 
 // Returns axios headers with the active clientId
 export const clientHeaders = () => ({
-  "x-client-id": sessionStorage.getItem("clientId") || "justin-yara",
+  "x-client-id": sessionStorage.getItem("clientId") || "",
 });
 
 export const API_ENDPOINTS = {
@@ -36,6 +36,9 @@ export const API_ENDPOINTS = {
   // Admin
   VERIFY_PASSCODE:  () => `${API_BASE_URL}/api/admin/verify-passcode`,
   IMPORT_FAMILIES:  () => `${API_BASE_URL}/api/admin/import-families`,
+
+  // Auth
+  LOGIN: () => `${API_BASE_URL}/api/auth/login`,
 };
 
 export default API_BASE_URL;

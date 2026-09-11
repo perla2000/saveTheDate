@@ -38,20 +38,29 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   // ── Financials tab state (server-backed, persists across portals) ─────────
-  const FIN_SECTIONS = {
-    cyprus: { label: "Cyprus Wedding" },
-    lebanon: { label: "Lebanon Wedding" },
-    gifts: { label: "Gifts" },
-  };
+  // Derive financial tabs from clientConfig; fall back to legacy cyprus/lebanon
+  const FIN_EXPENSE_TABS = (clientConfig?.adminConfig?.financialTabs) || [
+    { key: "cyprus",  label: "Cyprus Wedding" },
+    { key: "lebanon", label: "Lebanon Wedding" },
+  ];
+  const FIN_SECTIONS = Object.fromEntries([
+    ...FIN_EXPENSE_TABS.map(({ key, label }) => [key, { label }]),
+    ["gifts", { label: "Gifts" }],
+  ]);
 
-  const [finSubTab, setFinSubTab] = useState("cyprus");
+  const [finSubTab, setFinSubTab] = useState(FIN_EXPENSE_TABS[0]?.key || "cyprus");
   const [finLoading, setFinLoading] = useState(false);
   const [finCurrency, setFinCurrency] = useState("USD");
 
-  // Data per section
-  const [expenses, setExpenses] = useState([]);
-  const [expLebanon, setExpLebanon] = useState([]);
+  // Dynamic data map: { [tabKey]: [] }
+  const [finData, setFinData] = useState(() =>
+    Object.fromEntries(FIN_EXPENSE_TABS.map(({ key }) => [key, []]))
+  );
   const [gifts, setGifts] = useState([]);
+
+  // Keep legacy aliases for the first two tabs (used in totals/export below)
+  const expenses   = finData[FIN_EXPENSE_TABS[0]?.key] || [];
+  const expLebanon = finData[FIN_EXPENSE_TABS[1]?.key] || [];
 
   const [expError, setExpError] = useState("");
   const [expForm, setExpForm] = useState(null);
@@ -80,10 +89,17 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
   };
 
   // Helpers to get/set the right state for the active section
-  const sectionData = { cyprus: expenses, lebanon: expLebanon, gifts };
+  const sectionData = { ...finData, gifts };
   const sectionSetters = {
-    cyprus: setExpenses,
-    lebanon: setExpLebanon,
+    ...Object.fromEntries(
+      FIN_EXPENSE_TABS.map(({ key }) => [
+        key,
+        (valOrFn) => setFinData((prev) => ({
+          ...prev,
+          [key]: typeof valOrFn === "function" ? valOrFn(prev[key] || []) : valOrFn,
+        })),
+      ])
+    ),
     gifts: setGifts,
   };
   const activeExpenses =
@@ -95,8 +111,14 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
     try {
       const res = await axios.get(API_ENDPOINTS.GET_FIN(section));
       sectionSetters[section](Array.isArray(res.data) ? res.data : []);
-    } catch {
-      setExpError(`Could not load ${section} data.`);
+    } catch (err) {
+      // 404 just means no data yet — set empty, don't show error
+      if (err?.response?.status === 404) {
+        sectionSetters[section]([]);
+      } else if (err?.response?.status !== 400) {
+        // Suppress 400 (clientId missing edge-case) silently too
+        setExpError(`Could not load ${section} data.`);
+      }
     } finally {
       setFinLoading(false);
     }
@@ -291,6 +313,32 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
     XLSX.utils.book_append_sheet(wb, wsSeating, "Guest Seating");
 
     XLSX.writeFile(wb, `tables-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
+  const handleExportVendorsExcel = () => {
+    const rows = vendors.map((v, i) => ({
+      "#":       i + 1,
+      Name:      v.name,
+      Type:      v.type || "",
+      Status:    v.status || "",
+      Contact:   v.contact || "",
+      Price:     v.price || "",
+      Notes:     v.notes || "",
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 4 },
+      { wch: 28 },
+      { wch: 18 },
+      { wch: 14 },
+      { wch: 25 },
+      { wch: 14 },
+      { wch: 35 },
+    ];
+    XLSX.utils.book_append_sheet(wb, ws, "Vendors");
+    XLSX.writeFile(wb, `vendors-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   const handleExportFloorPlanPDF = async () => {
@@ -622,8 +670,7 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
   useEffect(() => {
     if (activeTab === "rsvp") fetchFamilies();
     if (activeTab === "financials") {
-      fetchSection("cyprus");
-      fetchSection("lebanon");
+      FIN_EXPENSE_TABS.forEach(({ key }) => fetchSection(key));
       fetchSection("gifts");
       fetchSimple("vendors", setVendors); // needed for the vendor dropdown in expense form
     }
@@ -631,8 +678,7 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
     if (activeTab === "todos") fetchSimple("todos", setTodos);
     if (activeTab === "vendors") {
       fetchSimple("vendors", setVendors);
-      fetchSection("cyprus"); // needed to compute vendor totals
-      fetchSection("lebanon");
+      FIN_EXPENSE_TABS.forEach(({ key }) => fetchSection(key)); // needed to compute vendor totals
     }
   }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -643,7 +689,11 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
       const res = await axios.get(API_ENDPOINTS.GET_ALL_FAMILIES());
       setFamilies(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      setRsvpError("Could not load families. Is the server running?");
+      if (err?.response?.status !== 404) {
+        setRsvpError("Could not load families. Is the server running?");
+      } else {
+        setFamilies([]);
+      }
     } finally {
       setRsvpLoading(false);
     }
@@ -746,18 +796,19 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
       confirmDateStr = confirm.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
     }
 
-    const coupleName = branding?.coupleName || clientConfig?.coupleName || "Justin & Yara";
-    const link = `${rsvpUrl}/?familyId=${familyId}`;
+    const coupleName = branding?.coupleName || clientConfig?.coupleName || "The Couple";
+    const link = `${rsvpUrl}/invitationcard?client=${clientConfig?.clientId}&familyId=${familyId}`;
 
     // Use custom template if set, otherwise use default
     const template = branding?.inviteMessageTemplate ||
-      `We're so happy to share this special moment with you 🤍\n\nOur big day is on {weddingDate}, and it would truly mean the world to us to have you there. \n\nPlease find our invitation card at the link below for all the details.\nWe really hope you can join us on this unforgettable day!\n\n{rsvpUrl}/?familyId={familyId}\n\nPlease confirm before {confirmDate}  🤍`;
+      `We're so happy to share this special moment with you 🤍\n\nOur big day is on {weddingDate}, and it would truly mean the world to us to have you there. \n\nPlease find our invitation card at the link below for all the details.\nWe really hope you can join us on this unforgettable day!\n\n{rsvpUrl}/invitationcard?client={clientId}&familyId={familyId}\n\nPlease confirm before {confirmDate}  🤍`;
 
     return template
       .replace(/{coupleName}/g, coupleName)
       .replace(/{weddingDate}/g, weddingDateStr)
       .replace(/{confirmDate}/g, confirmDateStr)
       .replace(/{rsvpUrl}/g, rsvpUrl)
+      .replace(/{clientId}/g, clientConfig?.clientId || "")
       .replace(/{familyId}/g, familyId)
       .replace(/{link}/g, link);
   };
@@ -806,7 +857,7 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
         giftRegistry: createGiftRegistry,
       });
       const newFamily = res.data;
-      const rsvpUrl = `${clientConfig?.rsvpUrl || "https://sparklink.cards"}/?familyId=${newFamily._id}`;
+      const rsvpUrl = `${clientConfig?.rsvpUrl || "https://sparklink.cards"}/invitationcard?client=${clientConfig?.clientId}&familyId=${newFamily._id}`;
       setCreateResult({ family: newFamily, rsvpUrl });
       setCreateGuests([{ name: "" }]);
       setCreateGiftRegistry(true);
@@ -1048,12 +1099,14 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
   };
 
   const isRsvpSection = ["rsvp", "create", "import"].includes(activeTab);
+  const visibleTabs = clientConfig?.adminConfig?.visibleTabs || ["financials", "branding", "tables", "todos", "vendors"];
+  const showTab = (key) => visibleTabs.includes(key);
 
   return (
     <div className="admin-dashboard">
       {/* ── Header: title + logout only ── */}
       <div className="admin-header">
-        <h1>Justin and Yara's Wedding</h1>
+        <h1>{branding?.coupleName || clientConfig?.coupleName || "Wedding"}'s Admin</h1>
         <button
           onClick={onLogout}
           className="admin-btn admin-btn-secondary admin-logout-btn">
@@ -1068,31 +1121,41 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
           className={`admin-tab-btn ${isRsvpSection ? "active" : ""}`}>
           RSVPs
         </button>
-        <button
-          onClick={() => setActiveTab("financials")}
-          className={`admin-tab-btn ${activeTab === "financials" ? "active" : ""}`}>
-          Financials
-        </button>
-        <button
-          onClick={() => setActiveTab("branding")}
-          className={`admin-tab-btn ${activeTab === "branding" ? "active" : ""}`}>
-          Branding
-        </button>
-        <button
-          onClick={() => setActiveTab("tables")}
-          className={`admin-tab-btn ${activeTab === "tables" ? "active" : ""}`}>
-          Tables
-        </button>
-        <button
-          onClick={() => setActiveTab("todos")}
-          className={`admin-tab-btn ${activeTab === "todos" ? "active" : ""}`}>
-          To-Dos
-        </button>
-        <button
-          onClick={() => setActiveTab("vendors")}
-          className={`admin-tab-btn ${activeTab === "vendors" ? "active" : ""}`}>
-          Vendors
-        </button>
+        {showTab("financials") && (
+          <button
+            onClick={() => setActiveTab("financials")}
+            className={`admin-tab-btn ${activeTab === "financials" ? "active" : ""}`}>
+            Financials
+          </button>
+        )}
+        {showTab("branding") && (
+          <button
+            onClick={() => setActiveTab("branding")}
+            className={`admin-tab-btn ${activeTab === "branding" ? "active" : ""}`}>
+            Branding
+          </button>
+        )}
+        {showTab("tables") && (
+          <button
+            onClick={() => setActiveTab("tables")}
+            className={`admin-tab-btn ${activeTab === "tables" ? "active" : ""}`}>
+            Tables
+          </button>
+        )}
+        {showTab("todos") && (
+          <button
+            onClick={() => setActiveTab("todos")}
+            className={`admin-tab-btn ${activeTab === "todos" ? "active" : ""}`}>
+            To-Dos
+          </button>
+        )}
+        {showTab("vendors") && (
+          <button
+            onClick={() => setActiveTab("vendors")}
+            className={`admin-tab-btn ${activeTab === "vendors" ? "active" : ""}`}>
+            Vendors
+          </button>
+        )}
       </div>
 
       {/* ── RSVP sub-navigation ── */}
@@ -1610,18 +1673,16 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
           <div className="admin-content">
             {/* ── Overview bar ── */}
             <div className="fin-overview">
-              <div className="fin-overview-card">
-                <span className="fin-overview-label">Cyprus Total</span>
-                <span className="fin-overview-val">{fmt(totalCyprus)}</span>
-              </div>
-              <div className="fin-overview-card">
-                <span className="fin-overview-label">Lebanon Total</span>
-                <span className="fin-overview-val">{fmt(totalLebanon)}</span>
-              </div>
+              {FIN_EXPENSE_TABS.map(({ key, label }) => (
+                <div key={key} className="fin-overview-card">
+                  <span className="fin-overview-label">{label}</span>
+                  <span className="fin-overview-val">{fmt((finData[key] || []).reduce((s, e) => s + (e.amount || 0), 0))}</span>
+                </div>
+              ))}
               <div className="fin-overview-card fin-overview-grand">
                 <span className="fin-overview-label">Grand Total</span>
                 <span className="fin-overview-val">
-                  {fmt(totalCyprus + totalLebanon)}
+                  {fmt(FIN_EXPENSE_TABS.reduce((s, { key }) => s + (finData[key] || []).reduce((a, e) => a + (e.amount || 0), 0), 0))}
                 </span>
               </div>
               <div className="fin-overview-card fin-overview-gifts">
@@ -1655,8 +1716,8 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
               </div>
             </div>
 
-            {/* ── Expenses sub-tabs (Cyprus / Lebanon) ── */}
-            {(finSubTab === "cyprus" || finSubTab === "lebanon") && (
+            {/* ── Expenses sub-tabs ── */}
+            {FIN_EXPENSE_TABS.some((t) => t.key === finSubTab) && (
               <>
                 <div className="fin-summary">
                   <div className="fin-stat-card fin-stat-total">
@@ -3211,6 +3272,12 @@ const AdminDashboard = ({ onLogout, clientConfig }) => {
                 className="admin-btn admin-btn-ghost"
                 onClick={() => fetchSimple("vendors", setVendors)}>
                 ↺ Refresh
+              </button>
+              <button
+                className="admin-btn admin-btn-ghost"
+                onClick={handleExportVendorsExcel}
+                title="Export vendors list to Excel">
+                ⬇ Export Excel
               </button>
               <button
                 className="admin-btn admin-btn-primary"

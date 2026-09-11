@@ -68,7 +68,7 @@ const Gift = () => {
               love and support are more than enough.</>
             }
           </p>
-          <p className="gift-names">{branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}</p>
+          <p className="gift-names">{branding?.coupleName || clientConfig?.coupleName || "The Couple"}</p>
           <div className="gift-signature"></div>
           <div className="gift-info-card">
             <div className="gift-logo">

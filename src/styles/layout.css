@@ -18,13 +18,13 @@ body.layout-vertical .full-screen-section {
 }
 
 /* ── Horizontal Layout (pages side-by-side, scroll left-right) ── */
-body.layout-horizontal {
+body.layout-horizontal:not(:has(.admin-dashboard)) {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
 }
 
-body.layout-horizontal .root-class {
+body.layout-horizontal:not(:has(.admin-dashboard)) .root-class {
   display: flex;
   flex-direction: row;
   height: 100vh;

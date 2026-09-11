@@ -209,7 +209,7 @@ export default function SaveTheDate() {
       <div className="std-overlay">
         <div className="std-center">
           <div className="std-title">{branding?.saveTheDateSubtitle || clientConfig?.saveTheDateSubtitle || "A DECADE OF LOVE,"}</div>
-          <div className="std-names">{branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}</div>
+          <div className="std-names">{branding?.coupleName || clientConfig?.coupleName || "The Couple"}</div>
           <div className="std-title">{branding?.saveTheDateTitle || clientConfig?.saveTheDateTitle || "A LIFETIME TO GO!"}</div>
 
           {branding?.logo && (

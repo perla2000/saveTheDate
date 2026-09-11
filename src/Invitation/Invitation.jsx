@@ -86,7 +86,7 @@ export default function Invitation() {
                   SON & DAUGHTER
                 </div>
 
-                <div className="couple-names">{branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}</div>
+                <div className="couple-names">{branding?.coupleName || clientConfig?.coupleName || "The Couple"}</div>
 
                 <div className="wedding-details">
                   <div className="wedding-day">

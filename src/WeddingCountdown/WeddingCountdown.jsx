@@ -45,12 +45,12 @@ const WeddingCountdown = () => {
     const formattedTime = weddingTimeStr.replace(/:/g, "") + "00";
     
     const eventDetails = {
-      title: `${branding?.coupleName || clientConfig?.coupleName || "Justin & Yara"}'s Wedding`,
+      title: `${branding?.coupleName || clientConfig?.coupleName || "The Couple"}'s Wedding`,
       date: formattedDate,
       startTime: formattedTime,
       endTime: "240000",
       location: branding?.venue || clientConfig?.venue || "Yarze Officers Club",
-      description: `Join us in celebrating the wedding of ${branding?.coupleName || clientConfig?.coupleName || "Justin and Yara"}!`,
+      description: `Join us in celebrating the wedding of ${branding?.coupleName || clientConfig?.coupleName || "the happy couple"}!`,
     };
 
     const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(

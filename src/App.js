@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import Admin from "./Admin/Admin";
+import Login from "./Admin/Login";
 import BackgroundMusic from "./BackgroundMusic/BackgroundMusic";
 import Gift from "./Gift/Gift";
 import Invitation from "./Invitation/Invitation";
 import LoadingScreen from "./LoadingScreen/LoadingScreen";
 import Location from "./Location/Location";
+import WeddingCountdown from "./WeddingCountdown/WeddingCountdown";
 import Guest from "./RSVP/Guest";
 import SaveTheDate from "./SaveTheDate/SaveTheDate";
-import WeddingCountdown from "./WeddingCountdown/WeddingCountdown";
 import SharedBackground from "./components/SharedBackground";
 import HorizontalNav from "./components/HorizontalNav";
-import { ClientProvider } from "./context/ClientContext";
+import { ClientProvider, useClient } from "./context/ClientContext";
 import { BrandingProvider } from "./context/BrandingContext";
 import { useBranding } from "./context/BrandingContext";
 import { ImageLoadingProvider, useImageLoading } from "./hooks/useImageLoading";
@@ -123,7 +124,10 @@ function AppContent() {
   }, [location.search]);
 
   const isAdmin   = location.pathname.startsWith("/admin");
+  const isLogin   = location.pathname.startsWith("/login");
   const isPreview = new URLSearchParams(location.search).get("preview") === "true";
+
+  const { clientId, login } = useClient();
 
   // Show content immediately when user tapped
   const loadingEnabled = branding?.showLoadingScreen !== false;
@@ -141,8 +145,15 @@ function AppContent() {
     if (!loadingEnabled) setShouldPlayMusic(true);
   }, [loadingEnabled]);
 
-  // On the admin route skip loading screen and music entirely
+  // Login page
+  if (isLogin) {
+    if (clientId) return <Navigate to="/admin" replace />;
+    return <Login onLogin={login} />;
+  }
+
+  // Admin route — must be logged in
   if (isAdmin) {
+    if (!clientId) return <Navigate to="/login" replace />;
     return (
       <Routes>
         <Route path="/admin" element={<Admin />} />
@@ -150,12 +161,17 @@ function AppContent() {
     );
   }
 
+  // Root: redirect to login if not logged in, to admin if logged in
+  if (location.pathname === "/") {
+    return <Navigate to={clientId ? "/admin" : "/login"} replace />;
+  }
+
   // Preview mode: skip tap/loading screen, show content immediately
   if (isPreview) {
     return (
       <div className="root-class content-visible">
         <Routes>
-          <Route path="/" element={<DetailsPage familyId={null} onGuestDataLoaded={() => {}} />} />
+          <Route path="/invitationcard" element={<DetailsPage familyId={null} onGuestDataLoaded={() => {}} />} />
         </Routes>
       </div>
     );
@@ -193,7 +209,7 @@ function AppContent() {
       <div className={`root-class ${showContent ? "content-visible" : ""}`}>
         <Routes>
           <Route
-            path="/"
+            path="/invitationcard"
             element={
               <DetailsPage
                 familyId={familyId}
@@ -202,6 +218,7 @@ function AppContent() {
             }
           />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/login" element={<Login onLogin={login} />} />
         </Routes>
       </div>
       <HorizontalNav />

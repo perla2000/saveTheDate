@@ -49,13 +49,13 @@ const DEFAULT_BRANDING = {
   venueMapEmbedUrl:   "",
   customPalettes:     [],
   sections: [
-    { id: "intro",      label: "Intro",                     enabled: true, order: 0 },
-    { id: "invitation", label: "Invitation",                enabled: true, order: 1 },
-    { id: "countdown",  label: "Countdown / Save the Date", enabled: true, order: 2 },
-    { id: "timeline",   label: "Timeline",                  enabled: true, order: 3 },
-    { id: "location",   label: "Location",                  enabled: true, order: 4 },
-    { id: "rsvp",       label: "RSVP",                      enabled: true, order: 5 },
-    { id: "lovestory",  label: "Love Story",                enabled: true, order: 6 },
+    { id: "intro",      label: "Intro",                     enabled: true, sortId: 0 },
+    { id: "invitation", label: "Invitation",                enabled: true, sortId: 1 },
+    { id: "countdown",  label: "Countdown / Save the Date", enabled: true, sortId: 2 },
+    { id: "timeline",   label: "Timeline",                  enabled: true, sortId: 3 },
+    { id: "location",   label: "Location",                  enabled: true, sortId: 4 },
+    { id: "rsvp",       label: "RSVP",                      enabled: true, sortId: 5 },
+    { id: "lovestory",  label: "Love Story",                enabled: true, sortId: 6 },
   ],
 };
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../config/api";
 import "./BrandingTab.css";
 
@@ -107,6 +107,16 @@ const Icon = ({ name, size = 18 }) => {
         <path d="M12 4v16" />
       </svg>
     ),
+    sections: (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="8" y1="6"  x2="21" y2="6"  />
+        <line x1="8" y1="12" x2="21" y2="12" />
+        <line x1="8" y1="18" x2="21" y2="18" />
+        <circle cx="3" cy="6"  r="1.5" fill="currentColor" stroke="none" />
+        <circle cx="3" cy="12" r="1.5" fill="currentColor" stroke="none" />
+        <circle cx="3" cy="18" r="1.5" fill="currentColor" stroke="none" />
+      </svg>
+    ),
   };
   return icons[name] || null;
 };
@@ -186,13 +196,13 @@ function InvitationPreview({ branding, clientConfig }) {
 
 export default function BrandingTab({ clientConfig }) {
   const DEFAULT_SECTIONS = [
-    { id: "intro",      label: "Intro",                     enabled: true, order: 0 },
-    { id: "invitation", label: "Invitation",                enabled: true, order: 1 },
-    { id: "countdown",  label: "Countdown / Save the Date", enabled: true, order: 2 },
-    { id: "timeline",   label: "Timeline",                  enabled: true, order: 3 },
-    { id: "location",   label: "Location",                  enabled: true, order: 4 },
-    { id: "rsvp",       label: "RSVP",                      enabled: true, order: 5 },
-    { id: "lovestory",  label: "Love Story",                enabled: true, order: 6 },
+    { id: "intro",      label: "Intro",                     enabled: true, sortId: 0 },
+    { id: "invitation", label: "Invitation",                enabled: true, sortId: 1 },
+    { id: "countdown",  label: "Countdown / Save the Date", enabled: true, sortId: 2 },
+    { id: "timeline",   label: "Timeline",                  enabled: true, sortId: 3 },
+    { id: "location",   label: "Location",                  enabled: true, sortId: 4 },
+    { id: "rsvp",       label: "RSVP",                      enabled: true, sortId: 5 },
+    { id: "lovestory",  label: "Love Story",                enabled: true, sortId: 6 },
   ];
 
   const [branding, setBranding] = useState({ accentColor: "#800020", backgroundColor: "#f7f1f1", textColor: "#4a3a3f", fontFamily: "Playfair Display", couplePhotos: [], venuePhotos: [], flipPhotos: [], logo: "", showLoadingScreen: true, layoutOrientation: "vertical", autoScrollEnabled: true, coupleName: "", groomName: "", brideName: "", groomParents: "", brideParents: "", weddingDate: "", weddingTime: "", venue: "", venueAddress: "", giftAccountId: "", giftPhoneNumber: "", giftProviderName: "", giftSubtitle: "", giftDescription: "", inviteMessageTemplate: "", saveTheDateSubtitle: "", saveTheDateTitle: "", venueMapUrl: "", venueMapEmbedUrl: "", customPalettes: [], sections: DEFAULT_SECTIONS });
@@ -202,11 +212,10 @@ export default function BrandingTab({ clientConfig }) {
   const [error,      setError]      = useState("");
   const [activeSection, setActiveSection] = useState("colors");
   const [uploadingKey, setUploadingKey] = useState(null);
-  const scrollRef = useRef(null);
-  
-  // State for adding custom palette
   const [showPaletteForm, setShowPaletteForm] = useState(false);
   const [newPalette, setNewPalette] = useState({ name: "", accent: "#800020", bg: "#f7f1f1", text: "#4a3a3f" });
+  const [dragSectionId, setDragSectionId] = useState(null);
+  const [dragOverId, setDragOverId] = useState(null);
 
   // Load branding on mount
   useEffect(() => {
@@ -298,7 +307,7 @@ export default function BrandingTab({ clientConfig }) {
       const found = saved.find((s) => s.id === def.id);
       return found ? { ...def, ...found } : def;
     });
-    return [...merged].sort((a, b) => a.order - b.order);
+    return [...merged].sort((a, b) => (a.sortId ?? a.order ?? 0) - (b.sortId ?? b.order ?? 0));
   };
 
   const toggleSection = (id) => {
@@ -308,18 +317,21 @@ export default function BrandingTab({ clientConfig }) {
     update({ sections: updated });
   };
 
-  const moveSection = (id, dir) => {
+  const onDragStart = (id) => setDragSectionId(id);
+  const onDragOver  = (e, id) => { e.preventDefault(); setDragOverId(id); };
+  const onDragEnd   = () => { setDragSectionId(null); setDragOverId(null); };
+
+  const onDrop = (e, targetId) => {
+    e.preventDefault();
+    if (!dragSectionId || dragSectionId === targetId) { onDragEnd(); return; }
     const list = getSections();
-    const idx = list.findIndex((s) => s.id === id);
-    const swapIdx = idx + dir;
-    if (swapIdx < 0 || swapIdx >= list.length) return;
-    const reordered = list.map((s, i) => {
-      if (i === idx)     return { ...s, order: list[swapIdx].order };
-      if (i === swapIdx) return { ...s, order: list[idx].order };
-      return s;
-    }).sort((a, b) => a.order - b.order)
-      .map((s, i) => ({ ...s, order: i }));
-    update({ sections: reordered });
+    const fromIdx = list.findIndex((s) => s.id === dragSectionId);
+    const toIdx   = list.findIndex((s) => s.id === targetId);
+    const reordered = [...list];
+    const [moved] = reordered.splice(fromIdx, 1);
+    reordered.splice(toIdx, 0, moved);
+    update({ sections: reordered.map((s, i) => ({ ...s, sortId: i })) });
+    onDragEnd();
   };
 
   const SECTIONS = ["colors", "fonts", "photos", "text", "settings", "sections"];
@@ -358,7 +370,7 @@ export default function BrandingTab({ clientConfig }) {
         </div>
 
         {/* Center: content */}
-        <div className="brand-content" ref={scrollRef}>
+        <div className="brand-content">
 
           {/* ── Colors ── */}
           {activeSection === "colors" && (
@@ -763,12 +775,26 @@ export default function BrandingTab({ clientConfig }) {
           {activeSection === "sections" && (
             <div className="brand-section">
               <h3 className="brand-section-title">Page Sections</h3>
-              <p className="brand-section-desc">Enable or disable each section and drag to reorder them.</p>
+              <p className="brand-section-desc">Toggle sections on/off and drag to reorder them.</p>
 
               <div className="brand-sections-list">
-                {getSections().map((sec, idx, arr) => (
-                  <div key={sec.id} className={`brand-section-row ${!sec.enabled ? "brand-section-row--disabled" : ""}`}>
+                {getSections().map((sec) => (
+                  <div
+                    key={sec.id}
+                    className={`brand-section-row ${!sec.enabled ? "brand-section-row--disabled" : ""} ${dragOverId === sec.id ? "brand-section-row--dragover" : ""} ${dragSectionId === sec.id ? "brand-section-row--dragging" : ""}`}
+                    draggable
+                    onDragStart={() => onDragStart(sec.id)}
+                    onDragOver={(e) => onDragOver(e, sec.id)}
+                    onDrop={(e) => onDrop(e, sec.id)}
+                    onDragEnd={onDragEnd}>
                     <div className="brand-section-row-left">
+                      <span className="brand-drag-handle" title="Drag to reorder">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="8"  y1="6"  x2="16" y2="6"  />
+                          <line x1="8"  y1="12" x2="16" y2="12" />
+                          <line x1="8"  y1="18" x2="16" y2="18" />
+                        </svg>
+                      </span>
                       <label className="brand-toggle brand-toggle-sm">
                         <input
                           type="checkbox"
@@ -779,22 +805,7 @@ export default function BrandingTab({ clientConfig }) {
                       </label>
                       <span className="brand-section-row-label">{sec.label}</span>
                     </div>
-                    <div className="brand-section-row-actions">
-                      <button
-                        className="brand-sort-btn"
-                        onClick={() => moveSection(sec.id, -1)}
-                        disabled={idx === 0}
-                        title="Move up">
-                        ↑
-                      </button>
-                      <button
-                        className="brand-sort-btn"
-                        onClick={() => moveSection(sec.id, 1)}
-                        disabled={idx === arr.length - 1}
-                        title="Move down">
-                        ↓
-                      </button>
-                    </div>
+                    <span className="brand-section-order-badge">{(sec.sortId ?? 0) + 1}</span>
                   </div>
                 ))}
               </div>

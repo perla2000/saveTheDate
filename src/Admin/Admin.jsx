@@ -1,12 +1,9 @@
-import { useState } from "react";
 import AdminDashboard from "./AdminDashboard";
-import AdminPasscode from "./AdminPasscode";
 import { useClient } from "../context/ClientContext";
 import "./Admin.css";
 
 const Admin = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { clientConfig, loading } = useClient();
+  const { clientConfig, loading, logout } = useClient();
 
   if (loading) {
     return (
@@ -20,17 +17,10 @@ const Admin = () => {
 
   return (
     <div className="admin-container">
-      {!isAuthenticated ? (
-        <AdminPasscode
-          onSuccess={() => setIsAuthenticated(true)}
-          clientConfig={clientConfig}
-        />
-      ) : (
-        <AdminDashboard
-          onLogout={() => setIsAuthenticated(false)}
-          clientConfig={clientConfig}
-        />
-      )}
+      <AdminDashboard
+        onLogout={logout}
+        clientConfig={clientConfig}
+      />
     </div>
   );
 };
